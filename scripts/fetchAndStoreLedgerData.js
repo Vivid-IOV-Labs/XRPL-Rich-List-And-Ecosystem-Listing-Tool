@@ -82,7 +82,7 @@ const richlist = async () => {
 
         i += 1;
 
-        if (i === 40) {
+        if (i === 200) {
           await accounts.insertMany(accountsArray);
           console.log(`${i} Documents Inserted`);
           accountsArray = [];
