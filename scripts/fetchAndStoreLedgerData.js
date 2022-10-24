@@ -50,7 +50,7 @@ const richlist = async () => {
     await mongoClient.connect();
     const db = await mongoClient.db('Richlist');
     const accounts = await db.collection('accounts');
-    console.log('Connected to mongodb', accounts);
+    console.log('Connected to mongodb');
 
     const getCurrentClosedLedgerInfo = await getLedgerInfo({ client });
     const ledger = getCurrentClosedLedgerInfo.result.ledger;
@@ -96,12 +96,13 @@ const richlist = async () => {
         marker = data.result.marker;
         console.log('Current Marker:', marker);
       }
+    }
 
-      if (accountsArray.length > 0) {
-        await accounts.insertMany(accountsArray);
-        console.log(`${i} Documents Inserted`);
-        accountsArray = [];
-      }
+    if (accountsArray.length > 0) {
+      await accounts.insertMany(accountsArray);
+      console.log(`${i} Documents Inserted`);
+      accountsArray = [];
+      i = 0;
     }
 
     console.log('Completed.');
