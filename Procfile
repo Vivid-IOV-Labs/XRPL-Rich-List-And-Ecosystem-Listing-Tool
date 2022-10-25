@@ -1,0 +1,1 @@
+web: node ./scripts/fetchAndStoreLedgerData.js
