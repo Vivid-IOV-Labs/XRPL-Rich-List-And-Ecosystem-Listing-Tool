@@ -10,6 +10,7 @@
     "@sailshq/socket.io-redis": "^5.2.0",
     "dotenv": "^16.0.3",
     "grunt": "1.0.4",
+    "mongodb": "^4.11.0",
     "sails": "^1.5.3",
     "sails-hook-grunt": "^5.0.0",
     "sails-hook-orm": "^4.0.0",

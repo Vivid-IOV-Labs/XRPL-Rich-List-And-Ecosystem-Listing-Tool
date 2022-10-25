@@ -1,6 +1,6 @@
 const path = require('path');
 const { Client } = require('xrpl');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
@@ -41,12 +41,7 @@ const getLedgerInfo = async ({ client, ledgerIndex = 'closed' }) => {
 
 const richlist = async () => {
   const client = new Client(process.env.WSS_CLIENT_URL);
-  const mongoClient = new MongoClient(process.env.MONGO_SERVER_URL, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  });
+  const mongoClient = new MongoClient(process.env.MONGO_SERVER_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
   try {
     await client.connect();
