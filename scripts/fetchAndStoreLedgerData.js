@@ -41,7 +41,12 @@ const getLedgerInfo = async ({ client, ledgerIndex = 'closed' }) => {
 
 const richlist = async () => {
   const client = new Client(process.env.WSS_CLIENT_URL);
-  const mongoClient = new MongoClient(process.env.MONGO_SERVER_URL);
+  const mongoClient = new MongoClient(process.env.MONGO_SERVER_URL, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  });
 
   try {
     await client.connect();
