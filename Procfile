@@ -1,1 +1,1 @@
-web: node ./scripts/fetchAndStoreLedgerData.js
+web: npm run start
