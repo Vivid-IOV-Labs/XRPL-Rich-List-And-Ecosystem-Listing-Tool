@@ -8,7 +8,7 @@ const getLedgerData = async ({ client, type = 'account', ledger = null, marker =
   try {
     let payload = {
       command: 'ledger_data',
-      limit: 20000,
+      limit: 200,
       ledger,
       type,
     };
