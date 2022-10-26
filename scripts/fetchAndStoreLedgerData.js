@@ -22,7 +22,6 @@ const getLedgerData = async ({ client, type = 'account', ledger = null, marker =
     const response = await client.request(payload);
     return response;
   } catch (error) {
-    console.log(error);
     throw new Error(error);
   }
 };
@@ -36,7 +35,6 @@ const getLedgerInfo = async ({ client, ledgerIndex = 'closed' }) => {
     });
     return response;
   } catch (error) {
-    console.log(error);
     throw new Error(error);
   }
 };
@@ -101,7 +99,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
         i += 1;
 
         // Batch insert in DB
-        if (i === 200) {
+        if (i === 20000) {
           await accountCollection.insertMany(accountsArray);
           console.log(`${i} Documents Inserted`);
           accountsArray = [];
@@ -127,7 +125,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
 
     console.log('Completed.');
   } catch (error) {
-    if (retry > 0 && ledger && marker) {
+    if (retry > 0) {
       retry -= 1;
       richlist(ledger.ledger_index, marker);
     } else {
