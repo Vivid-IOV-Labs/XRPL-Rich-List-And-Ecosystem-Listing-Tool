@@ -129,7 +129,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
   } catch (error) {
     if (retry > 0 && ledger && marker) {
       retry -= 1;
-      richlist((ledgerIndex = ledger.ledger_index), marker);
+      richlist(ledger.ledger_index, marker);
     } else {
       console.log(error);
     }
