@@ -4,6 +4,8 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
+let retry = 3;
+
 const getLedgerData = async ({ client, type = 'account', ledger = null, marker = undefined }) => {
   try {
     let payload = {
@@ -39,9 +41,11 @@ const getLedgerInfo = async ({ client, ledgerIndex = 'closed' }) => {
   }
 };
 
-const richlist = async () => {
+const richlist = async ({ ledgerIndex, marker = null }) => {
   const client = new Client(process.env.WSS_CLIENT_URL);
   const mongoClient = new MongoClient(process.env.MONGO_SERVER_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+  let ledger = null;
+  let currentLedgerHash = '';
 
   try {
     await client.connect();
@@ -53,23 +57,30 @@ const richlist = async () => {
     const ledgerCollection = await db.collection('ledger');
     console.log('Connected to mongodb');
 
-    const getCurrentClosedLedgerInfo = await getLedgerInfo({ client });
-    const ledger = getCurrentClosedLedgerInfo.result.ledger;
-    const currentLedgerHash = ledger.hash;
-    let accountsArray = [];
-    let marker = null;
     let i = 0;
+    let accountsArray = [];
 
-    let stats = {
-      _id: ledger.hash,
-      hash: ledger.hash,
-      ledgeIndex: parseInt(ledger.ledger_index),
-      closeTimeHuman: ledger.close_time_human,
-      totalCoins: parseInt(ledger.total_coins) / 1000000,
-    };
+    if (!ledgerIndex) {
+      const getCurrentClosedLedgerInfo = await getLedgerInfo({ client });
+      ledger = getCurrentClosedLedgerInfo.result.ledger;
+      currentLedgerHash = ledger.hash;
 
-    // Adding the ledger stats in DB
-    await ledgerCollection.insertOne(stats);
+      let stats = {
+        _id: ledger.hash,
+        hash: ledger.hash,
+        ledgeIndex: parseInt(ledger.ledger_index),
+        closeTimeHuman: ledger.close_time_human,
+        totalCoins: parseInt(ledger.total_coins) / 1000000,
+      };
+
+      // Adding the ledger stats in DB
+      await ledgerCollection.insertOne(stats);
+    } else {
+      const getCurrentClosedLedgerInfo = await getLedgerInfo({ client, ledgerIndex });
+      ledger = getCurrentClosedLedgerInfo.result.ledger;
+      currentLedgerHash = ledger.hash;
+    }
+
     console.log('Ledger Hash:', currentLedgerHash);
 
     // Iterate till the marker is undefined
@@ -116,7 +127,12 @@ const richlist = async () => {
 
     console.log('Completed.');
   } catch (error) {
-    console.log(error);
+    if (retry > 0 && ledger && marker) {
+      retry -= 1;
+      richlist({ ledgerIndex: ledger.ledger_index, marker });
+    } else {
+      console.log(error);
+    }
   } finally {
     // Ensures that the client connection is closed
     await client.disconnect();
