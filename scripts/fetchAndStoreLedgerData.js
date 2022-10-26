@@ -49,7 +49,8 @@ const richlist = async () => {
 
     await mongoClient.connect();
     const db = await mongoClient.db('Richlist');
-    const accounts = await db.collection('accounts');
+    const accountCollection = await db.collection('account');
+    const ledgerCollection = await db.collection('ledger');
     console.log('Connected to mongodb');
 
     const getCurrentClosedLedgerInfo = await getLedgerInfo({ client });
@@ -60,21 +61,27 @@ const richlist = async () => {
     let i = 0;
 
     let stats = {
+      _id: ledger.hash,
       hash: ledger.hash,
       ledgeIndex: parseInt(ledger.ledger_index),
       closeTimeHuman: ledger.close_time_human,
       totalCoins: parseInt(ledger.total_coins) / 1000000,
     };
 
+    // Adding the ledger stats in DB
+    await ledgerCollection.insertOne(stats);
     console.log('Ledger Hash:', currentLedgerHash);
 
+    // Iterate till the marker is undefined
     while (marker !== 'undefined') {
       const data = await getLedgerData({ client, ledger: currentLedgerHash, marker });
 
+      // Manipulate the data from xrpl
       if (data.result.state !== null) {
         data.result.state.forEach((i) => {
           accountsArray.push({
-            ...stats,
+            // eslint-disable-next-line camelcase
+            ledger_id: ledger.hash,
             account: i.Account,
             balance: parseInt(i.Balance) / 1000000,
           });
@@ -82,8 +89,9 @@ const richlist = async () => {
 
         i += 1;
 
+        // Batch insert in DB
         if (i === 200) {
-          await accounts.insertMany(accountsArray);
+          await accountCollection.insertMany(accountsArray);
           console.log(`${i} Documents Inserted`);
           accountsArray = [];
           i = 0;
@@ -98,8 +106,9 @@ const richlist = async () => {
       }
     }
 
+    // If some accountCollection are present in the array insert in DB
     if (accountsArray.length > 0) {
-      await accounts.insertMany(accountsArray);
+      await accountCollection.insertMany(accountsArray);
       console.log(`${i} Documents Inserted`);
       accountsArray = [];
       i = 0;
