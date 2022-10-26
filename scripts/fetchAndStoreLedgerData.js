@@ -41,7 +41,7 @@ const getLedgerInfo = async ({ client, ledgerIndex = 'closed' }) => {
   }
 };
 
-const richlist = async ({ ledgerIndex, marker = null }) => {
+const richlist = async (ledgerIndex = null, marker = null) => {
   const client = new Client(process.env.WSS_CLIENT_URL);
   const mongoClient = new MongoClient(process.env.MONGO_SERVER_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
   let ledger = null;
@@ -129,7 +129,7 @@ const richlist = async ({ ledgerIndex, marker = null }) => {
   } catch (error) {
     if (retry > 0 && ledger && marker) {
       retry -= 1;
-      richlist({ ledgerIndex: ledger.ledger_index, marker });
+      richlist((ledgerIndex = ledger.ledger_index), marker);
     } else {
       console.log(error);
     }
