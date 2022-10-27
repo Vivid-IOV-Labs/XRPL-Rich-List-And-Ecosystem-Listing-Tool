@@ -56,6 +56,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
     console.log('Connected to mongodb');
 
     let i = 0;
+    let j = 0;
     let accountsArray = [];
 
     if (!ledgerIndex) {
@@ -99,11 +100,19 @@ const richlist = async (ledgerIndex = null, marker = null) => {
         i += 1;
 
         // Batch insert in DB
-        if (i === 20000) {
+        if (i === 2000) {
+          if (j % 4 === 0) {
+            console.log('Reconnecting websocket');
+            await client.disconnect();
+            await client.connect();
+            console.log('Connected to websocket');
+          }
+
           await accountCollection.insertMany(accountsArray);
           console.log(`${i} Documents Inserted`);
           accountsArray = [];
           i = 0;
+          j += 1;
         }
       }
 
