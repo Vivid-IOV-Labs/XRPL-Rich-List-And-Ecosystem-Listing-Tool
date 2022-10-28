@@ -120,21 +120,20 @@ const richlist = async (ledgerIndex = null, marker = null) => {
         marker = 'undefined';
       } else {
         marker = data.result.marker;
-        console.log('Current Marker:', marker);
       }
     }
 
     // If some accountCollection are present in the array insert in DB
     if (accountsArray.length > 0) {
       await accountCollection.insertMany(accountsArray);
-      console.log(`${i} Documents Inserted`);
+      console.log(`${i} Documents Inserted, Current marker ${marker}`);
       accountsArray = [];
       i = 0;
     }
 
     console.log('Completed.');
   } catch (error) {
-    if (retry > 0) {
+    if (retry > 0 && ledger && marker) {
       retry -= 1;
       richlist(ledger.ledger_index, marker);
     } else {
