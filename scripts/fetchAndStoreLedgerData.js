@@ -41,7 +41,7 @@ const getLedgerInfo = async ({ client, ledgerIndex = 'closed' }) => {
 
 const richlist = async (ledgerIndex = null, marker = null) => {
   const client = new Client(process.env.WSS_CLIENT_URL);
-  const mongoClient = new MongoClient(process.env.MONGO_SERVER_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+  const mongoClient = new MongoClient(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
   let ledger = null;
   let currentLedgerHash = '';
 

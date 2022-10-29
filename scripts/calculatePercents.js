@@ -4,7 +4,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const calculatePercents = async () => {
-  const mongoClient = new MongoClient(process.env.MONGO_SERVER_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+  const mongoClient = new MongoClient(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
   try {
     const db = await mongoClient.db('Richlist');
     const accountCollection = await db.collection('account').find().toArray();
