@@ -39,9 +39,32 @@ const getLedgerInfo = async ({ client, ledgerIndex = 'closed' }) => {
   }
 };
 
+const dropPreviousCollection = async (database) => {
+  return new Promise(async (resolve, reject) => {
+    let done = false;
+    if (database) {
+      const collections = await database.listCollections();
+      await collections.forEach(async (collection, index) => {
+        if (collection.name === 'account') {
+          console.log(`Dropping ${collection.name}`);
+          await database.collection(collection.name).drop();
+        }
+        if (index + 1 === collections.length) {
+          done = true;
+        }
+      });
+    }
+
+    if (done === true) {
+      resolve();
+    }
+  });
+};
+
 const richlist = async (ledgerIndex = null, marker = null) => {
   const client = new Client(process.env.WSS_CLIENT_URL);
-  const mongoClient = new MongoClient(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+  console.log(process.env.DB_URI);
+  const mongoClient = new MongoClient(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
   let ledger = null;
   let currentLedgerHash = '';
 
@@ -51,6 +74,11 @@ const richlist = async (ledgerIndex = null, marker = null) => {
 
     await mongoClient.connect();
     const db = await mongoClient.db('Richlist');
+
+    if (!ledgerIndex) {
+      await dropPreviousCollection(db);
+    }
+
     const accountCollection = await db.collection('account');
     const ledgerCollection = await db.collection('ledger');
     console.log('Connected to mongodb');
