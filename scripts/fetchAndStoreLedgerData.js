@@ -41,7 +41,6 @@ const getLedgerInfo = async ({ client, ledgerIndex = 'closed' }) => {
 
 const dropPreviousCollection = async (database) => {
   return new Promise(async (resolve, reject) => {
-    let done = false;
     if (database) {
       const collections = await database.listCollections();
       await collections.forEach(async (collection, index) => {
@@ -49,13 +48,11 @@ const dropPreviousCollection = async (database) => {
           console.log(`Dropping ${collection.name}`);
           await database.collection(collection.name).drop();
         }
-        if (index + 1 === collections.length) {
-          done = true;
+        if (index === collections.length) {
+          resolve();
         }
       });
-    }
-
-    if (done === true) {
+    } else {
       resolve();
     }
   });
