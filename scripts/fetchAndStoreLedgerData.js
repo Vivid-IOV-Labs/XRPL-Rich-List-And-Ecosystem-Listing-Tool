@@ -1,6 +1,6 @@
 const path = require('path');
 const { Client } = require('xrpl');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient } = require('mongodb');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
@@ -61,7 +61,7 @@ const dropPreviousCollection = async (database) => {
 const richlist = async (ledgerIndex = null, marker = null) => {
   const client = new Client(process.env.WSS_CLIENT_URL);
   console.log(process.env.DB_URI);
-  const mongoClient = new MongoClient(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+  const mongoClient = new MongoClient(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
   let ledger = null;
   let currentLedgerHash = '';
 
