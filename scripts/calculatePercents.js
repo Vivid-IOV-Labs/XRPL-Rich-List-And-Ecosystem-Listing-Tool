@@ -8,7 +8,7 @@ const calculatePercents = async () => {
     try {
         const db = await mongoClient.db('Richlist');
         const accountCollection = await db.collection('account').find().toArray();
-        const ledgerCollection = await db.collection('ledger').find().toArray();
+        const ledgerCollection = await db.collection('ledger').find({}, { sort: { timestamp: -1 }, limit: 1 }).toArray();
         const percentsCollection = await db.collection('percents');
         const { hash, ledgeIndex, closeTimeHuman, totalCoins } = ledgerCollection[0];
         const percents = [0.01, 0.1, 0.2, 0.5, 1, 2, 3, 4, 5, 10, 15, 25, 34.19];

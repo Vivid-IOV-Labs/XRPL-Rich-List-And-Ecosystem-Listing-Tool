@@ -22,7 +22,7 @@ const fetchRichlist = async (req, res) => {
         data: {},
     };
     try {
-        const data = await mongoClient.db('Richlist').collection('percents').find().toArray();
+        const data = await mongoClient.db('Richlist').collection('percents').find({}, { sort: { timestamp: -1 }, limit: 1 }).toArray()
         resObj.data = data[0];
         resObj.success = true;
         resObj.error = false;
