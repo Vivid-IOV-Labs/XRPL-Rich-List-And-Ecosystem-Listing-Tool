@@ -32,12 +32,14 @@ const getAccountNfts = async (account, marker = null, client) => {
     }
 };
 
-const findPreviousDetails = (issuer, nfts) => {
+const findPreviousRank = (issuer, nfts) => {
     if (!nfts || nfts.length === 0) return null;
 
-    nfts.forEach((nft) => {
-        if (nft.issuer === issuer) return nft;
-    });
+    for (i in nfts) {
+        if (nfts[i].issuer === issuer) {
+            return nfts[i].rank;
+        }
+    }
     return null;
 };
 
@@ -107,8 +109,8 @@ const nftAnalytics = async (percent) => {
             const issuer = nft[0];
             const rank = index + 1;
             const count = nft[1];
-            const previousDetails = findPreviousDetails(issuer, previousNftokens);
-            let directionOfChange = previousDetails ? previousDetails.rank - rank : 0;
+            const prevRank = findPreviousRank(issuer, previousNftokens);
+            let directionOfChange = prevRank ? prevRank - rank : 0;
 
             return {
                 issuer,
