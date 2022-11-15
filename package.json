@@ -1,42 +1,43 @@
 {
-  "name": "peerkat-richlist",
-  "private": true,
-  "version": "0.0.0",
-  "description": "a Sails application",
-  "keywords": [],
-  "dependencies": {
-    "@sailshq/connect-redis": "^3.2.1",
-    "@sailshq/lodash": "^3.10.3",
-    "@sailshq/socket.io-redis": "^5.2.0",
-    "dotenv": "^16.0.3",
-    "grunt": "1.0.4",
-    "mongodb": "^4.11.0",
-    "sails": "^1.5.3",
-    "sails-hook-grunt": "^5.0.0",
-    "sails-hook-orm": "^4.0.0",
-    "sails-hook-sockets": "^2.0.0",
-    "sails-mongo": "^2.0.0",
-    "xrpl": "^2.5.0"
-  },
-  "devDependencies": {
-    "eslint": "5.16.0"
-  },
-  "scripts": {
-    "fetch:ledger-data": "node ./scripts/fetchAndStoreLedgerData.js",
-    "calculate:percents": "node ./scripts/calculatePercents.js",
-    "start:sails": "NODE_ENV=production node app.js",
-    "test": "npm run lint && npm run custom-tests && echo 'Done.'",
-    "lint": "./node_modules/eslint/bin/eslint.js . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
-    "custom-tests": "echo \"(No other custom tests yet.)\" && echo"
-  },
-  "main": "app.js",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/tusharpardhe/peerkat-richlist.git"
-  },
-  "author": "tusharpardhe",
-  "license": "",
-  "engines": {
-    "node": "^16.17"
-  }
+    "name": "peerkat-richlist",
+    "private": true,
+    "version": "0.0.0",
+    "description": "a Sails application",
+    "keywords": [],
+    "dependencies": {
+        "@sailshq/connect-redis": "^3.2.1",
+        "@sailshq/lodash": "^3.10.3",
+        "@sailshq/socket.io-redis": "^5.2.0",
+        "dotenv": "^16.0.3",
+        "grunt": "1.0.4",
+        "mongodb": "^4.11.0",
+        "sails": "^1.5.3",
+        "sails-hook-grunt": "^5.0.0",
+        "sails-hook-orm": "^4.0.0",
+        "sails-hook-sockets": "^2.0.0",
+        "sails-mongo": "^2.0.0",
+        "xrpl": "^2.5.0"
+    },
+    "devDependencies": {
+        "eslint": "5.16.0"
+    },
+    "scripts": {
+        "fetch:ledger-data": "node ./scripts/fetchAndStoreLedgerData.js",
+        "calculate:percents": "node ./scripts/calculatePercents.js",
+        "calculate:nftAnalytics": "node ./scripts/nftAnalytics.js",
+        "start:sails": "NODE_ENV=production node app.js",
+        "test": "npm run lint && npm run custom-tests && echo 'Done.'",
+        "lint": "./node_modules/eslint/bin/eslint.js . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
+        "custom-tests": "echo \"(No other custom tests yet.)\" && echo"
+    },
+    "main": "app.js",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/tusharpardhe/peerkat-richlist.git"
+    },
+    "author": "tusharpardhe",
+    "license": "",
+    "engines": {
+        "node": "^16.17"
+    }
 }
