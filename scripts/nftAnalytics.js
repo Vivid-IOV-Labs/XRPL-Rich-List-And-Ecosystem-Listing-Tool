@@ -33,14 +33,13 @@ const getAccountNfts = async (account, marker = null, client) => {
 };
 
 const findPreviousDetails = (issuer, nfts) => {
-
     if (!nfts || nfts.length === 0) return null;
 
-    nfts.forEach(nft => {
+    nfts.forEach((nft) => {
         if (nft.issuer === issuer) return nft;
     });
     return null;
-}
+};
 
 const nftAnalytics = async (percent) => {
     const client = new Client(process.env.WSS_CLIENT_URL);
@@ -54,23 +53,22 @@ const nftAnalytics = async (percent) => {
 
         const db = await mongoClient.db('Richlist');
 
-        const ledgerCollection = await db.collection('ledger').find({}, { sort: { timestamp: -1 }, limit: 1 }).toArray();
+        const ledgerCollection = await db.collection('ledger').find().sort({ closeTimeHuman: -1 }).toArray();
         const currentLedgerDetails = ledgerCollection[0];
 
         const nfTokens = await db.collection('nfTokens');
         const checkIfExists = await nfTokens.find({ hash: currentLedgerDetails.hash }).toArray();
 
         if (checkIfExists.length > 0) {
-            console.log("Details already present");
+            console.log('Details already present');
             return;
-        };
+        }
+        const lastNfToken = await nfTokens.find().sort({ closeTimeHuman: -1 }).toArray();
+        const previousNftokens = lastNfToken[0] ? lastNfToken[0].topPercent.nfts : [];
 
         console.log('Getting all accounts');
         const accountCollection = await db.collection('account').find().toArray();
         console.log('Sorting all accounts');
-
-        const lastNfToken = nfTokens.find({}, { sort: { timestamp: -1 }, limit: 1 }).toArray();
-        const previousNftokens = lastNfToken[0] ? lastNfToken[0].nfts : [];
 
         const accounts = accountCollection.sort((a, b) => {
             return a.balance > b.balance ? -1 : b.balance > a.balance ? 1 : 0;
@@ -102,7 +100,7 @@ const nftAnalytics = async (percent) => {
                     accountNfts[issuer] = accountNfts[issuer] ? accountNfts[issuer] + 1 : 1;
                 }
             }
-        };
+        }
 
         const currLedgerNfts = Object.entries(accountNfts).sort((a, b) => b[1] - a[1]);
         const nfts = currLedgerNfts.map((nft, index) => {
@@ -116,8 +114,8 @@ const nftAnalytics = async (percent) => {
                 issuer,
                 rank,
                 count,
-                directionOfChange
-            }
+                directionOfChange,
+            };
         });
 
         const result = {
@@ -126,13 +124,12 @@ const nftAnalytics = async (percent) => {
                 percent,
                 numberOfAccounts: currAccounts.length,
                 aggregateBalances: currBalance,
-                nfts
-            }
-        }
+                nfts,
+            },
+        };
 
         await nfTokens.insertOne(result);
         console.log(JSON.stringify(result, null, '\t'));
-
     } catch (error) {
         console.log(error);
     } finally {
