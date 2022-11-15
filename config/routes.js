@@ -19,6 +19,7 @@ module.exports.routes = {
      ***************************************************************************/
 
     'GET /richlist': { controller: 'FetchRichlistController', action: 'fetch' },
+    'GET /nft/analytics': { controller: 'FetchNfTokenAnalyticsController', action: 'fetch' },
     /***************************************************************************
      *                                                                          *
      * More custom routes here...                                               *

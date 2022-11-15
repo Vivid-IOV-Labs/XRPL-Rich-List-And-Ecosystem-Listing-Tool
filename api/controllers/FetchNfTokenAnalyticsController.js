@@ -14,7 +14,7 @@ const response = async (_xresp, res) => {
     return res.ok(_xresp);
 };
 
-const fetchRichlist = async (req, res) => {
+const fetchNfTokens = async (req, res) => {
     const resObj = {
         success: false,
         error: false,
@@ -22,7 +22,7 @@ const fetchRichlist = async (req, res) => {
         data: {},
     };
     try {
-        const data = await mongoClient.db('Richlist').collection('percents').find().sort({ closeTimeHuman: -1 }).toArray();
+        const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ closeTimeHuman: -1 }).toArray();
         resObj.data = data[0] ? data[0] : null;
         resObj.success = true;
         resObj.error = false;
@@ -38,5 +38,5 @@ const fetchRichlist = async (req, res) => {
 };
 
 module.exports = {
-    fetch: fetchRichlist,
+    fetch: fetchNfTokens,
 };
