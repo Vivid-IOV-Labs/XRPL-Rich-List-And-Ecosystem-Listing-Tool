@@ -81,6 +81,7 @@ const nftAnalytics = async (percent) => {
         // const nftsToTrack = await db.collection('nftIssuer');
         console.log('Total Accounts:', currAccounts.length);
         const accountNfts = {};
+        const accountTaxons = {};
 
         if (!currAccounts) {
             console.log('No Data Found');
@@ -95,11 +96,18 @@ const nftAnalytics = async (percent) => {
             if (nfts.length > 0) {
                 for (i in nfts) {
                     const issuer = nfts[i].Issuer;
+                    const taxon = nfts[i].NFTokenTaxon;
                     // const exists = await nftsToTrack.countDocuments({ issuer });
                     // if (exists) {
                     //     accountNfts[issuer] = accountNfts[issuer] ? accountNfts[issuer] + 1 : 1;
                     // }
                     accountNfts[issuer] = accountNfts[issuer] ? accountNfts[issuer] + 1 : 1;
+
+                    if (accountTaxons[issuer] && !accountTaxons[issuer].includes(taxon)) {
+                        accountTaxons[issuer].push(taxon);
+                    } else {
+                        accountTaxons[issuer] = [taxon];
+                    }
                 }
             }
         }
@@ -117,6 +125,7 @@ const nftAnalytics = async (percent) => {
                 rank,
                 count,
                 directionOfChange,
+                taxon: accountTaxons[issuer],
             };
         });
 
@@ -130,7 +139,7 @@ const nftAnalytics = async (percent) => {
             },
         };
 
-        await nfTokens.insertOne(result);
+        // await nfTokens.insertOne(result);
         console.log(JSON.stringify(result, null, '\t'));
     } catch (error) {
         console.log(error);
