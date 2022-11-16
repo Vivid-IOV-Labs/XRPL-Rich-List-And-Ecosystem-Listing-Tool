@@ -27,9 +27,11 @@ const fetchNfTokens = async (req, res) => {
         const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ closeTimeHuman: -1 }).toArray();
         const currData = data[0] ? data[0] : null;
 
-        if (nftsInfo != undefined && nftsInfo === false) {
+        if (nftsInfo === false) {
             delete currData.topPercent.nfts;
-        } else if (top) {
+        }
+
+        if (top) {
             top = parseInt(top);
             currData.topPercent.nfts = currData.topPercent.nfts.slice(0, top);
         }
