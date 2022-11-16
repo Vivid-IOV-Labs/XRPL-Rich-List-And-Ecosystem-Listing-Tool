@@ -13,15 +13,16 @@
 require('dotenv').config();
 
 module.exports = {
-  /***************************************************************************
-   * Set the default database connection for models in the development       *
-   * environment (see config/connections.js and config/models.js )           *
-   ***************************************************************************/
-
-  datastores: {
-    default: {
-      adapter: 'sails-mongo',
-      url: process.env.DB_URI,
+    /***************************************************************************
+     * Set the default database connection for models in the development       *
+     * environment (see config/connections.js and config/models.js )           *
+     ***************************************************************************/
+    datastores: {
+        default: {
+            adapter: 'sails-mongo',
+            host: 'localhost',
+            port: '27017',
+            database: 'Richlist',
+        },
     },
-  },
 };
