@@ -43,6 +43,14 @@ const findPreviousRank = (issuer, nfts) => {
     return null;
 };
 
+const isIncluded = (nfTokenDetails, taxon, tokenId) => {
+    for (i in nfTokenDetails) {
+        if (nfTokenDetails[i].taxon === taxon && nfTokenDetails[i].tokenId === tokenId) return true;
+    }
+
+    return false;
+};
+
 const nftAnalytics = async (percent) => {
     const client = new Client(process.env.WSS_CLIENT_URL);
     const mongoClient = new MongoClient(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -81,7 +89,7 @@ const nftAnalytics = async (percent) => {
         // const nftsToTrack = await db.collection('nftIssuer');
         console.log('Total Accounts:', currAccounts.length);
         const accountNfts = {};
-        const accountTaxons = {};
+        const nfTokenDetails = {};
 
         if (!currAccounts) {
             console.log('No Data Found');
@@ -97,16 +105,17 @@ const nftAnalytics = async (percent) => {
                 for (i in nfts) {
                     const issuer = nfts[i].Issuer;
                     const taxon = nfts[i].NFTokenTaxon;
+                    const tokenId = nfts[i].NFTokenID;
                     // const exists = await nftsToTrack.countDocuments({ issuer });
                     // if (exists) {
                     //     accountNfts[issuer] = accountNfts[issuer] ? accountNfts[issuer] + 1 : 1;
                     // }
                     accountNfts[issuer] = accountNfts[issuer] ? accountNfts[issuer] + 1 : 1;
 
-                    if (accountTaxons[issuer] && !accountTaxons[issuer].includes(taxon)) {
-                        accountTaxons[issuer].push(taxon);
+                    if (nfTokenDetails[issuer] && !isIncluded(nfTokenDetails, taxon, tokenId)) {
+                        nfTokenDetails[issuer].push({ taxon, tokenId });
                     } else {
-                        accountTaxons[issuer] = [taxon];
+                        nfTokenDetails[issuer] = [{ taxon, tokenId }];
                     }
                 }
             }
@@ -125,7 +134,7 @@ const nftAnalytics = async (percent) => {
                 rank,
                 count,
                 directionOfChange,
-                taxon: accountTaxons[issuer],
+                nfts: nfTokenDetails[issuer],
             };
         });
 
@@ -135,7 +144,7 @@ const nftAnalytics = async (percent) => {
                 percent,
                 numberOfAccounts: currAccounts.length,
                 aggregateBalances: currBalance,
-                nfts,
+                nftList: nfts,
             },
         };
 
