@@ -22,8 +22,19 @@ const fetchNfTokens = async (req, res) => {
         data: {},
     };
     try {
+        const { query } = req;
+        let { nftsInfo, top } = query;
         const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ closeTimeHuman: -1 }).toArray();
-        resObj.data = data[0] ? data[0] : null;
+        const currData = data[0] ? data[0] : null;
+
+        if (nftsInfo != undefined && nftsInfo === false) {
+            delete currData.topPercent.nfts;
+        } else if (top) {
+            top = parseInt(top);
+            currData.topPercent.nfts = currData.topPercent.nfts.slice(0, top);
+        }
+
+        resObj.data = currData;
         resObj.success = true;
         resObj.error = false;
         resObj.message = 'Success';
