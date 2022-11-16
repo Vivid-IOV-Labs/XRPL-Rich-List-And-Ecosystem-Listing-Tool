@@ -29,9 +29,7 @@ const fetchNfTokens = async (req, res) => {
 
         if (nftsInfo != undefined && nftsInfo === false) {
             delete currData.topPercent.nfts;
-        }
-
-        if (top) {
+        } else if (top) {
             top = parseInt(top);
             currData.topPercent.nfts = currData.topPercent.nfts.slice(0, top);
         }
