@@ -33,13 +33,29 @@ const getAccountNfts = async (account, marker = null, client) => {
 };
 
 const findPreviousRank = (issuer, nfts) => {
-    if (!nfts || nfts.length === 0) return null;
+    if (!nfts || nfts.length === 0) {
+        return null;
+    }
 
     for (i in nfts) {
         if (nfts[i].issuer === issuer) {
             return nfts[i].rank;
         }
     }
+    return null;
+};
+
+const findPreviousCount = (issuer, nfts) => {
+    if (!nfts || nfts.length === 0) {
+        return null;
+    }
+
+    for (i in nfts) {
+        if (nfts[i].issuer === issuer) {
+            return nfts[i].count;
+        }
+    }
+
     return null;
 };
 
@@ -70,11 +86,12 @@ const nftAnalytics = async (percent) => {
         const checkIfExists = await nfTokens.find({ hash: currentLedgerDetails.hash }).toArray();
 
         if (checkIfExists.length > 0) {
-            console.log('Details already present');
+            console.log('Details already present', currentLedgerDetails.hash);
             return;
         }
         const lastNfToken = await nfTokens.find().sort({ closeTimeHuman: -1 }).toArray();
         const previousNftokens = lastNfToken[0] ? lastNfToken[0].topPercent.nfts : [];
+        const previousAccountList = lastNfToken[0] ? lastNfToken[0].topPercent.accountList : [];
 
         console.log('Getting all accounts');
         const accountCollection = await db.collection('account').find().toArray();
@@ -90,6 +107,7 @@ const nftAnalytics = async (percent) => {
         console.log('Total Accounts:', currAccounts.length);
         const accountNfts = {};
         const nfTokenDetails = {};
+        const accountWithCorrespondingNfts = [];
 
         if (!currAccounts) {
             console.log('No Data Found');
@@ -106,10 +124,6 @@ const nftAnalytics = async (percent) => {
                     const issuer = nfts[i].Issuer;
                     const taxon = nfts[i].NFTokenTaxon;
                     const tokenId = nfts[i].NFTokenID;
-                    // const exists = await nftsToTrack.countDocuments({ issuer });
-                    // if (exists) {
-                    //     accountNfts[issuer] = accountNfts[issuer] ? accountNfts[issuer] + 1 : 1;
-                    // }
                     accountNfts[issuer] = accountNfts[issuer] ? accountNfts[issuer] + 1 : 1;
 
                     if (nfTokenDetails[issuer] && !isIncluded(nfTokenDetails, taxon, tokenId)) {
@@ -117,6 +131,18 @@ const nftAnalytics = async (percent) => {
                     } else {
                         nfTokenDetails[issuer] = [{ taxon, tokenId }];
                     }
+                }
+
+                for (key in nfTokenDetails) {
+                    let obj = { account, currBalance, collections: [] };
+                    const prevRank = findPreviousRank(key, previousAccountList);
+                    obj.collections.push({
+                        issuer: key,
+                        nfts: nfTokenDetails[key],
+                        totalNfts: nfTokenDetails[key].length,
+                        change: prevRank ? prevRank - nfTokenDetails[key].length : 0,
+                    });
+                    accountWithCorrespondingNfts.push(obj);
                 }
             }
         }
@@ -145,6 +171,7 @@ const nftAnalytics = async (percent) => {
                 numberOfAccounts: currAccounts.length,
                 aggregateBalances: currBalance,
                 nftList: nfts,
+                accountList: accountWithCorrespondingNfts,
             },
         };
 
