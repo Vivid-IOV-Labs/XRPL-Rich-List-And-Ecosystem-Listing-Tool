@@ -1,7 +1,7 @@
 const mongoClient = Richlist.getDatastore().manager.client;
 const { response } = require('./response');
 
-const fetchNfTokens = async (req, res) => {
+const fetchAccountNfts = async (req, res) => {
     const resObj = {
         success: false,
         error: false,
@@ -10,11 +10,11 @@ const fetchNfTokens = async (req, res) => {
     };
     try {
         const { query } = req;
-        let { nftsInfo, top } = query;
+        let { limit, page } = query;
         const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ closeTimeHuman: -1 }).toArray();
         const currData = data[0] ? data[0] : null;
 
-        if (!currData || !currData.topPercent || !currData.topPercent.nftList) {
+        if (!currData || !currData.topPercent || !currData.topPercent.accountList) {
             resObj.data = null;
             resObj.success = false;
             resObj.error = true;
@@ -23,20 +23,27 @@ const fetchNfTokens = async (req, res) => {
             return;
         }
 
-        if (currData.topPercent.accountList) {
-            delete currData.topPercent.accountList;
+        let accountList = currData.topPercent.accountList;
+        delete currData.topPercent.accountList;
+        delete currData.topPercent.nftList;
+        limit = limit ? parseInt(limit) : 10;
+        page = page ? parseInt(page) - 1 : 0;
+
+        if (limit < 0 || page < 0 || limit > 400) {
+            resObj.data = null;
+            resObj.success = false;
+            resObj.error = true;
+            resObj.message = 'Bad Params';
+            response(resObj, res);
+            return;
         }
 
-        if (nftsInfo === 'false') {
-            const list = currData.topPercent.nftList;
-            delete currData.topPercent.nftList;
-            currData.topPercent.nftList = list.map(({ nfts, ...other }) => other);
-        }
-
-        if (top) {
-            top = parseInt(top);
-            currData.topPercent.nftList = currData.topPercent.nftList.slice(0, top);
-        }
+        // slicing array based on limit and page number
+        const startingIndex = page * limit;
+        const endingIndex = limit + startingIndex;
+        accountList = accountList.slice(startingIndex, endingIndex);
+        console.log(accountList);
+        currData.topPercent.accountList = accountList;
 
         resObj.data = currData;
         resObj.success = true;
@@ -53,5 +60,5 @@ const fetchNfTokens = async (req, res) => {
 };
 
 module.exports = {
-    fetch: fetchNfTokens,
+    fetch: fetchAccountNfts,
 };

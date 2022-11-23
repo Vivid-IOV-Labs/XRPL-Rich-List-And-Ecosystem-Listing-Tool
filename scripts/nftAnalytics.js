@@ -45,14 +45,22 @@ const findPreviousRank = (issuer, nfts) => {
     return null;
 };
 
-const findPreviousCount = (issuer, nfts) => {
-    if (!nfts || nfts.length === 0) {
+const findPreviousCount = (account, issuer, accounts) => {
+    if (!accounts || accounts.length === 0) {
         return null;
     }
+    let collections = [];
 
-    for (i in nfts) {
-        if (nfts[i].issuer === issuer) {
-            return nfts[i].count;
+    for (i in accounts) {
+        if (accounts[i].account === account) {
+            collections = accounts[i].collections;
+            break;
+        }
+    }
+
+    for (i in collections) {
+        if (collections[i].issuer === issuer) {
+            return collections[i].rank;
         }
     }
 
@@ -118,6 +126,7 @@ const nftAnalytics = async (percent) => {
             const account = currAccounts[index].account;
             currBalance += currAccounts[index].balance;
             const nfts = await getAccountNfts(account, null, client);
+            let obj = { account, balance: currAccounts[index].balance, collections: [] };
 
             if (nfts.length > 0) {
                 for (i in nfts) {
@@ -133,17 +142,23 @@ const nftAnalytics = async (percent) => {
                     }
                 }
 
-                for (key in nfTokenDetails) {
-                    let obj = { account, currBalance, collections: [] };
-                    const prevRank = findPreviousRank(key, previousAccountList);
+                const sortednf = Object.entries(nfTokenDetails)
+                    .sort(([, a], [, b]) => b.length - a.length)
+                    .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
+                let rank = 1;
+                for (key in sortednf) {
+                    const prevRank = findPreviousCount(account, key, previousAccountList);
                     obj.collections.push({
                         issuer: key,
+                        rank,
                         nfts: nfTokenDetails[key],
                         totalNfts: nfTokenDetails[key].length,
                         change: prevRank ? prevRank - nfTokenDetails[key].length : 0,
                     });
-                    accountWithCorrespondingNfts.push(obj);
+                    rank += 1;
                 }
+                accountWithCorrespondingNfts.push(obj);
             }
         }
 
