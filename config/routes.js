@@ -21,6 +21,8 @@ module.exports.routes = {
     'GET /richlist': { controller: 'FetchRichlistController', action: 'fetch' },
     'GET /richlist/nfts': { controller: 'FetchNfTokenAnalyticsController', action: 'fetch' },
     'GET /richlist/account-nfts': { controller: 'FetchAccountNftsController', action: 'fetch' },
+    'GET /xrpl/ecosystem': { controller: 'FetchXrplEcosystemController', action: 'fetch' },
+    'POST /xrpl/ecosystem/save': { controller: 'SaveXRPLEcosystemEntryController', action: 'save' },
     /***************************************************************************
      *                                                                          *
      * More custom routes here...                                               *

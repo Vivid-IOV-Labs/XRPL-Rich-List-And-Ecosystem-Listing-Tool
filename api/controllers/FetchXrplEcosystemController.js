@@ -1,7 +1,7 @@
 const mongoClient = Richlist.getDatastore().manager.client;
 const { response } = require('./response');
 
-const fetchAccountNfts = async (req, res) => {
+const fetchXrplEcosystem = async (req, res) => {
     const resObj = {
         success: false,
         error: false,
@@ -9,13 +9,9 @@ const fetchAccountNfts = async (req, res) => {
         data: {},
     };
     try {
-        const { query } = req;
-        console.log('Hiii');
-        let { limit, page } = query;
-        const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ closeTimeHuman: -1 }).toArray();
-        const currData = data[0] ? data[0] : null;
+        let data = await mongoClient.db('XRPL').collection('ecosystem').find().toArray();
 
-        if (!currData || !currData.topPercent || !currData.topPercent.accountList) {
+        if (!data) {
             resObj.data = null;
             resObj.success = false;
             resObj.error = true;
@@ -24,9 +20,8 @@ const fetchAccountNfts = async (req, res) => {
             return;
         }
 
-        let accountList = currData.topPercent.accountList;
-        delete currData.topPercent.accountList;
-        delete currData.topPercent.nftList;
+        const { query } = req;
+        let { limit, page } = query;
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;
 
@@ -39,13 +34,12 @@ const fetchAccountNfts = async (req, res) => {
             return;
         }
 
-        // slicing array based on limit and page number
+        // slicing based on limit and page number
         const startingIndex = page * limit;
         const endingIndex = limit + startingIndex;
-        accountList = accountList.slice(startingIndex, endingIndex);
-        currData.topPercent.accountList = accountList;
+        data = data.slice(startingIndex, endingIndex);
 
-        resObj.data = currData;
+        resObj.data = data;
         resObj.success = true;
         resObj.error = false;
         resObj.message = 'Success';
@@ -60,5 +54,5 @@ const fetchAccountNfts = async (req, res) => {
 };
 
 module.exports = {
-    fetch: fetchAccountNfts,
+    fetch: fetchXrplEcosystem,
 };
