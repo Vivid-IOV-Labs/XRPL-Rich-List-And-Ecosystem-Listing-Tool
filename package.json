@@ -1,8 +1,8 @@
 {
-    "name": "peerkat-richlist",
+    "name": "peerkat-xrpl-apis",
     "private": true,
     "version": "0.0.0",
-    "description": "a Sails application",
+    "description": "Backend for Peerkat XRPL related APIs",
     "keywords": [],
     "dependencies": {
         "@sailshq/connect-redis": "^3.2.1",
