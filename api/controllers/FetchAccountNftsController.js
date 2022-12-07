@@ -10,7 +10,6 @@ const fetchAccountNfts = async (req, res) => {
     };
     try {
         const { query } = req;
-        console.log('Hiii');
         let { limit, page } = query;
         const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ closeTimeHuman: -1 }).toArray();
         const currData = data[0] ? data[0] : null;
