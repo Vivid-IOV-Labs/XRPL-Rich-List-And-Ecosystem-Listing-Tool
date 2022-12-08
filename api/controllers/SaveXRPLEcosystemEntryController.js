@@ -21,16 +21,16 @@ const saveXRPLEcosystemEntry = async (req, res) => {
     };
 
     try {
-        if (!data || data.length == 0 || typeof data !== Array) {
+        if (!data || data.length === 0 || typeof data !== Array) {
             errorRes('Please check the data again', resObj);
             return;
         }
 
         for (i in data) {
             const record = data[i];
-            const { name, website, twitter, live, otherDetails, isVisible, nickName, category } = record;
+            const { name, website, twitter, live, isVisible, nickName, category } = record;
 
-            if (!(name && website && twitter && live && otherDetails && isVisible && nickName && category)) {
+            if (!(name && website && twitter && live && isVisible && nickName && category)) {
                 errorRes(`Please check the parameters again of record ${i + 1}`, resObj);
                 return;
             }
