@@ -9,7 +9,7 @@ const errorRes = (errorMsg, resObj) => {
     response(resObj, res);
 };
 
-const saveXRPLEcosystemEntry = async (req, res) => {
+const saveXRPLNftCollection = async (req, res) => {
     const { body } = req;
     const { data } = body;
 
@@ -28,15 +28,15 @@ const saveXRPLEcosystemEntry = async (req, res) => {
 
         for (i in data) {
             const record = data[i];
-            const { name, website, twitter, live, isVisible, nickName, category } = record;
+            const { issuerAccount, projectName, shortDescription } = record;
 
-            if (!(name && website && twitter && live && isVisible && nickName && category)) {
+            if (!(issuerAccount && projectName && shortDescription)) {
                 errorRes(`Please check the parameters again of record ${i + 1}`, resObj);
                 return;
             }
         }
 
-        const ecosystem = await mongoClient.db('XRPL').collection('ecosystem');
+        const ecosystem = await mongoClient.db('XRPL').collection('xls20Nfts');
         await ecosystem.insertMany(data);
 
         resObj.data = null;
@@ -51,5 +51,5 @@ const saveXRPLEcosystemEntry = async (req, res) => {
 };
 
 module.exports = {
-    save: saveXRPLEcosystemEntry,
+    save: saveXRPLNftCollection,
 };
