@@ -23,7 +23,10 @@ module.exports.routes = {
     'GET /richlist/account-nfts': { controller: 'FetchAccountNftsController', action: 'fetch' },
     'GET /xrpl/ecosystem': { controller: 'FetchXrplEcosystemController', action: 'fetch' },
     'GET /xrpl/xls20Nfts': { controller: 'FetchXLS20NftCollectionsController', action: 'fetch' },
+    'GET /xrpl/ious': { controller: 'FetchXRPLIOUCollectionsController', action: 'fetch' },
     'POST /xrpl/ecosystem/save': { controller: 'SaveXRPLEcosystemEntryController', action: 'save' },
+    'POST /xrpl/xls20Nfts/save': { controller: 'SaveXRPLNftCollectionsController', action: 'save' },
+    'POST /xrpl/ious/save': { controller: 'SaveXRPLIousController', action: 'save' },
     /***************************************************************************
      *                                                                          *
      * More custom routes here...                                               *

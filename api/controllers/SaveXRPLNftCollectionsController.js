@@ -1,7 +1,7 @@
 const mongoClient = Richlist.getDatastore().manager.client;
 const { response } = require('./response');
 
-const errorRes = (errorMsg, resObj) => {
+const errorRes = (errorMsg, resObj, res) => {
     resObj.data = null;
     resObj.success = false;
     resObj.error = true;
@@ -22,7 +22,7 @@ const saveXRPLNftCollection = async (req, res) => {
 
     try {
         if (!data || data.length === 0 || typeof data !== Array) {
-            errorRes('Please check the data again', resObj);
+            errorRes('Please check the data again', resObj, res);
             return;
         }
 
@@ -31,7 +31,7 @@ const saveXRPLNftCollection = async (req, res) => {
             const { issuerAccount, projectName, shortDescription } = record;
 
             if (!(issuerAccount && projectName && shortDescription)) {
-                errorRes(`Please check the parameters again of record ${i + 1}`, resObj);
+                errorRes(`Please check the parameters again of record ${i + 1}`, resObj, res);
                 return;
             }
         }
@@ -45,7 +45,7 @@ const saveXRPLNftCollection = async (req, res) => {
         resObj.message = 'Success';
         response(resObj, res);
     } catch (error) {
-        errorRes('Some error occured', resObj);
+        errorRes('Some error occured', resObj, res);
         console.log(error);
     }
 };
