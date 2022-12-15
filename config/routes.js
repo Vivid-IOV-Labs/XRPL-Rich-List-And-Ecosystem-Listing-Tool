@@ -22,6 +22,7 @@ module.exports.routes = {
     'GET /richlist/nfts': { controller: 'FetchNfTokenAnalyticsController', action: 'fetch' },
     'GET /richlist/account-nfts': { controller: 'FetchAccountNftsController', action: 'fetch' },
     'GET /xrpl/ecosystem': { controller: 'FetchXrplEcosystemController', action: 'fetch' },
+    'GET /xrpl/xls20Nfts/info': { controller: 'FetchXLS20NftsForPublicController', action: 'fetch' },
     'GET /xrpl/xls20Nfts': { controller: 'FetchXLS20NftCollectionsController', action: 'fetch' },
     'GET /xrpl/ious': { controller: 'FetchXRPLIOUCollectionsController', action: 'fetch' },
     'POST /xrpl/ecosystem/save': { controller: 'SaveXRPLEcosystemEntryController', action: 'save' },
