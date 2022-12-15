@@ -1,11 +1,11 @@
 module.exports.policies = {
     SaveXRPLEcosystemEntryController: {
-        '*': 'isAdmin',
+        '*': ['decryptRequest', 'isAdmin'],
     },
     SaveXRPLIousController: {
-        '*': 'isAdmin',
+        '*': ['decryptRequest', 'isAdmin'],
     },
     SaveXRPLNftCollectionsController: {
-        '*': 'isAdmin',
+        '*': ['decryptRequest', 'isAdmin'],
     },
 };
