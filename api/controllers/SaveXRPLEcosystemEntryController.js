@@ -21,7 +21,7 @@ const saveXRPLEcosystemEntry = async (req, res) => {
     };
 
     try {
-        if (!data || data.length === 0 || typeof data !== Array) {
+        if (!data || data.length === 0) {
             errorRes('Please check the data again', resObj, res);
             return;
         }

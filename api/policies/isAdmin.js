@@ -1,7 +1,7 @@
 module.exports = async function (req, res, next) {
     try {
         const { body, headers, query } = req;
-        const accessKey = body?.accessKey | headers?.accessKey | query?.accessKey;
+        const accessKey = body?.accessKey || headers?.accessKey || query?.accessKey;
 
         if (accessKey && accessKey === process.env.ACCESS_KEY) {
             return next();
