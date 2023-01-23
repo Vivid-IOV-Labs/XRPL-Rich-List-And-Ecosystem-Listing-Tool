@@ -25,5 +25,5 @@ const generateQR = async (req, res) => {
 };
 
 module.exports = {
-    generateQR,
+    generate: generateQR,
 };

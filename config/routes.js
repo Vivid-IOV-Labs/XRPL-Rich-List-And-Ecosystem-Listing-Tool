@@ -25,9 +25,11 @@ module.exports.routes = {
     'GET /xrpl/xls20Nfts/info': { controller: 'FetchXLS20NftsForPublicController', action: 'fetch' },
     'GET /xrpl/xls20Nfts': { controller: 'FetchXLS20NftCollectionsController', action: 'fetch' },
     'GET /xrpl/ious': { controller: 'FetchXRPLIOUCollectionsController', action: 'fetch' },
+    'GET /xumm/qr/generate': { controller: 'GenerateXUMMQRController', action: 'generate' },
     'POST /xrpl/ecosystem/save': { controller: 'SaveXRPLEcosystemEntryController', action: 'save' },
     'POST /xrpl/xls20Nfts/save': { controller: 'SaveXRPLNftCollectionsController', action: 'save' },
     'POST /xrpl/ious/save': { controller: 'SaveXRPLIousController', action: 'save' },
+    'POST /xumm/login/verify': { controller: 'VerifyXUMMLoginController', action: 'verify' },
     /***************************************************************************
      *                                                                          *
      * More custom routes here...                                               *

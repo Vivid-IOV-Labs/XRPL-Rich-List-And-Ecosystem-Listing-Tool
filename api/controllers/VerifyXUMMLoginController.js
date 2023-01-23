@@ -1,5 +1,7 @@
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const mongoClient = Richlist.getDatastore().manager.client;
 const { response } = require('./response');
+const jwt = require('jsonwebtoken');
 
 const verifyXummLogin = async (req, res) => {
     const resObj = {
@@ -44,7 +46,8 @@ const verifyXummLogin = async (req, res) => {
         if (account) {
             const isAuthorized = await mongoClient.db('XRPL').collection('admin').find({ address: account }).toArray();
             if (isAuthorized.length > 0) {
-                resObj.data = { address: account };
+                const token = jwt.sign({ address: account }, process.env.TOKEN_KEY);
+                resObj.data = { address: account, token };
                 resObj.success = true;
                 resObj.error = false;
                 resObj.message = `Success`;
@@ -70,5 +73,5 @@ const verifyXummLogin = async (req, res) => {
 };
 
 module.exports = {
-    verifyXummLogin,
+    verify: verifyXummLogin,
 };
