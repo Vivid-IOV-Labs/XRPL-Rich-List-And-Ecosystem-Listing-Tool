@@ -17,7 +17,8 @@
         "sails-hook-orm": "^4.0.0",
         "sails-hook-sockets": "^2.0.0",
         "sails-mongo": "^2.0.0",
-        "xrpl": "^2.5.0"
+        "xrpl": "^2.5.0",
+        "xumm-sdk": "^1.7.1"
     },
     "devDependencies": {
         "eslint": "5.16.0",
