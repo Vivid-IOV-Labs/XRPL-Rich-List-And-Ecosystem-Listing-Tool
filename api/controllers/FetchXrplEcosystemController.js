@@ -9,7 +9,16 @@ const fetchXrplEcosystem = async (req, res) => {
         data: {},
     };
     try {
-        let data = await mongoClient.db('XRPL').collection('ecosystem').find().toArray();
+        const { query } = req;
+        let { limit, page, search } = query;
+        limit = limit ? parseInt(limit) : 10;
+        page = page ? parseInt(page) - 1 : 0;
+        search = search ? search : '';
+        let data = await mongoClient
+            .db('XRPL')
+            .collection('ecosystem')
+            .find({ name: { $regex: search, $options: 'i' } })
+            .toArray();
 
         if (!data) {
             resObj.data = null;
@@ -19,11 +28,6 @@ const fetchXrplEcosystem = async (req, res) => {
             response(resObj, res);
             return;
         }
-
-        const { query } = req;
-        let { limit, page } = query;
-        limit = limit ? parseInt(limit) : 10;
-        page = page ? parseInt(page) - 1 : 0;
 
         if (limit < 0 || page < 0 || limit > 200) {
             resObj.data = null;
