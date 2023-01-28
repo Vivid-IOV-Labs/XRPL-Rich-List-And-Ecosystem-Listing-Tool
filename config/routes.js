@@ -13,9 +13,9 @@ module.exports.routes = {
     'GET /xrpl/ious': { controller: 'FetchXRPLIOUCollectionsController', action: 'fetch' },
 
     // Routes to update data
-    'GET /xrpl/ecosystem/update': { controller: 'UpdateXRPLEcosystemEntryController', action: 'update' },
-    'GET /xrpl/xls20Nfts/update': { controller: 'UpdateXRPLNftCollectionsController', action: 'update' },
-    'GET /xrpl/ious/update': { controller: 'UpdateXRPLIousController', action: 'update' },
+    'POST /xrpl/ecosystem/update': { controller: 'UpdateXRPLEcosystemEntryController', action: 'update' },
+    'POST /xrpl/xls20Nfts/update': { controller: 'UpdateXRPLNftCollectionsController', action: 'update' },
+    'POST /xrpl/ious/update': { controller: 'UpdateXRPLIousController', action: 'update' },
 
     // Routes that save data in DB
     'POST /xrpl/ecosystem/save': { controller: 'SaveXRPLEcosystemEntryController', action: 'save' },
