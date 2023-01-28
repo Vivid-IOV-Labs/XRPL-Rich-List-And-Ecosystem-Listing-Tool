@@ -46,5 +46,5 @@ const updateEcosystemEntry = async (req, res) => {
 };
 
 module.exports = {
-    save: updateEcosystemEntry,
+    update: updateEcosystemEntry,
 };

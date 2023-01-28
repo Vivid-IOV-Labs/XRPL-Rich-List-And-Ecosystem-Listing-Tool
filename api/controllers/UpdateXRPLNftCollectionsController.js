@@ -46,5 +46,5 @@ const updateNFTs = async (req, res) => {
 };
 
 module.exports = {
-    save: updateNFTs,
+    update: updateNFTs,
 };

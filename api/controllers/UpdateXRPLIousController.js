@@ -46,5 +46,5 @@ const updateIOUs = async (req, res) => {
 };
 
 module.exports = {
-    save: updateIOUs,
+    update: updateIOUs,
 };
