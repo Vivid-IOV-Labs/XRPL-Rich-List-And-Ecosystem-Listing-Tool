@@ -1,4 +1,5 @@
 const mongoClient = Richlist.getDatastore().manager.client;
+const { ObjectId } = require('mongodb');
 const { response } = require('./response');
 
 const errorRes = (errorMsg, resObj, res) => {
@@ -27,7 +28,7 @@ const updateIOUs = async (req, res) => {
         }
 
         const ecosystem = await mongoClient.db('XRPL').collection('ious');
-        const result = await ecosystem.updateOne({ _id: id }, { $set: { data } });
+        const result = await ecosystem.updateOne({ _id: ObjectId(id) }, { $set: { ...data } });
 
         if (result.modifiedCount === 0) {
             errorRes('No data found', resObj, res);
