@@ -46,7 +46,7 @@ const verifyXummLogin = async (req, res) => {
         if (account) {
             const isAuthorized = await mongoClient.db('XRPL').collection('admin').find({ address: account }).toArray();
             if (isAuthorized.length > 0) {
-                const token = jwt.sign({ address: account }, process.env.TOKEN_KEY);
+                const token = jwt.sign({ address: account }, process.env.TOKEN_KEY, { expiresIn: '1d' });
                 resObj.data = { address: account, token };
                 resObj.success = true;
                 resObj.error = false;
