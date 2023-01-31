@@ -7,16 +7,7 @@ module.exports.routes = {
     'GET /richlist/account-nfts': { controller: 'FetchAccountNftsController', action: 'fetch' },
 
     // NFTs, Ecosystem and IOUs related stuff
-    'GET /xrpl/ecosystem': [
-        {
-            controller: 'ValidateJWTController',
-            action: 'validate',
-        },
-        {
-            controller: 'FetchXrplEcosystemController',
-            action: 'fetch',
-        },
-    ],
+    'GET /xrpl/ecosystem': { controller: 'FetchXrplEcosystemController', action: 'fetch' },
     'GET /xrpl/xls20Nfts/info': { controller: 'FetchXLS20NftsForPublicController', action: 'fetch' },
     'GET /xrpl/xls20Nfts': { controller: 'FetchXLS20NftCollectionsController', action: 'fetch' },
     'GET /xrpl/ious': { controller: 'FetchXRPLIOUCollectionsController', action: 'fetch' },
