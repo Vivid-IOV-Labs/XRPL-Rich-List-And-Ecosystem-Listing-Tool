@@ -1,9 +1,5 @@
-/**
- * ValidateJwtController
- *
- * @description :: Server-side actions for handling incoming requests.
- * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
+const { response } = require('./response');
+const jwt = require('jsonwebtoken');
 
 const validateJwt = async (req, res, next) => {
     const resObj = {
@@ -25,10 +21,21 @@ const validateJwt = async (req, res, next) => {
         }
 
         const decoded = jwt.verify(headers.authorization, process.env.TOKEN_KEY);
+
         if (decoded) {
-            next(req, res);
-            return;
+            resObj.data = { success: true };
+            resObj.success = true;
+            resObj.error = false;
+            resObj.message = `JWT validated successfully`;
+        } else {
+            resObj.data = { success: false };
+            resObj.success = true;
+            resObj.error = false;
+            resObj.message = `JWT validation failed`;
         }
+
+        response(resObj, res);
+        return;
     } catch (err) {
         resObj.data = null;
         resObj.success = false;

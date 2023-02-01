@@ -25,4 +25,7 @@ module.exports.routes = {
     // XUMM Related Routes
     'POST /xumm/login/verify': { controller: 'VerifyXUMMLoginController', action: 'verify' },
     'GET /xumm/qr/generate': { controller: 'GenerateXUMMQRController', action: 'generate' },
+
+    // Route to validate JWT
+    'POST /jwt/validate': { controller: 'ValidateJWTController', action: 'validate' },
 };
