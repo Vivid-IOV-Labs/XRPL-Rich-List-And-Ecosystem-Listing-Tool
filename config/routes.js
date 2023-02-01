@@ -23,7 +23,7 @@ module.exports.routes = {
     'POST /xrpl/ious/save': { controller: 'SaveXRPLIousController', action: 'save' },
 
     // XUMM Related Routes
-    'POST /xumm/login/verify': { controller: 'VerifyXUMMLoginController', action: 'verify' },
+    'GET /xumm/login/verify': { controller: 'VerifyXUMMLoginController', action: 'verify' },
     'GET /xumm/qr/generate': { controller: 'GenerateXUMMQRController', action: 'generate' },
 
     // Route to validate JWT
