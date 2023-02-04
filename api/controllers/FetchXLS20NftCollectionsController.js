@@ -1,5 +1,6 @@
 const mongoClient = Richlist.getDatastore().manager.client;
 const { response } = require('./response');
+const { validate } = require('./ValidateJwtController');
 
 const fetchXls20NftsFromDB = async (req, res) => {
     const resObj = {
@@ -10,6 +11,7 @@ const fetchXls20NftsFromDB = async (req, res) => {
     };
     try {
         let data = await mongoClient.db('XRPL').collection('xls20Nfts').find().toArray();
+        await validate(req, res);
 
         if (!data) {
             resObj.data = null;

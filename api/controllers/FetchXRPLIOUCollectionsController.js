@@ -1,5 +1,6 @@
 const mongoClient = Richlist.getDatastore().manager.client;
 const { response } = require('./response');
+const { validate } = require('./ValidateJwtController');
 
 const fetchIOUs = async (req, res) => {
     const resObj = {
@@ -10,6 +11,7 @@ const fetchIOUs = async (req, res) => {
     };
     try {
         const { query } = req;
+        await validate(req, res);
         let { limit, page, search } = query;
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;

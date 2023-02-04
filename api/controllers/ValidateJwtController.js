@@ -1,7 +1,8 @@
 const { response } = require('./response');
 const jwt = require('jsonwebtoken');
+const mongoClient = Richlist.getDatastore().manager.client;
 
-const validateJwt = async (req, res, next) => {
+const validateJwt = async (req, res) => {
     const resObj = {
         success: false,
         error: false,
@@ -10,37 +11,39 @@ const validateJwt = async (req, res, next) => {
     };
 
     try {
-        const { headers } = req;
-        if (!headers || !headers.authorization) {
+        const { body, query, headers } = req;
+        const token = body?.token || query?.token || headers?.token;
+
+        if (!token) {
             resObj.data = null;
             resObj.success = false;
             resObj.error = true;
-            resObj.message = `Please provide 'authorization' in headers`;
+            resObj.message = `Please provide 'authorization' token`;
             response(resObj, res);
             return;
         }
-
-        const decoded = jwt.verify(headers.authorization, process.env.TOKEN_KEY);
+        console.log(token);
+        const decoded = jwt.verify(token, process.env.TOKEN_KEY);
 
         if (decoded) {
-            resObj.data = { success: true };
-            resObj.success = true;
-            resObj.error = false;
-            resObj.message = `JWT validated successfully`;
-        } else {
-            resObj.data = { success: false };
-            resObj.success = true;
-            resObj.error = false;
-            resObj.message = `JWT validation failed`;
+            const findAddress = await mongoClient.db('XRPL').collection('admin').find({ address: decoded.address }).toArray();
+            if (findAddress.length > 0) {
+                return;
+            }
         }
+
+        resObj.data = { success: false };
+        resObj.success = true;
+        resObj.error = false;
+        resObj.message = `JWT validation failed`;
 
         response(resObj, res);
         return;
     } catch (err) {
-        resObj.data = null;
-        resObj.success = false;
-        resObj.error = true;
-        resObj.message = `Some error occured, Please try again`;
+        resObj.data = { success: false };
+        resObj.success = true;
+        resObj.error = false;
+        resObj.message = `JWT validation failed`;
         response(resObj, res);
         console.log(err);
     }
