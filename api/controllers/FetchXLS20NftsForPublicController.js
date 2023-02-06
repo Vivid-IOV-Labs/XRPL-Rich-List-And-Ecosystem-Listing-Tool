@@ -14,7 +14,7 @@ const fetchXls20Nfts = async (req, res) => {
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;
         search = search ? search : '';
-        let data = mongoClient
+        let data = await mongoClient
             .db('XRPL')
             .collection('xls20Nfts')
             .find({ projectName: { $regex: search, $options: 'i' } })
