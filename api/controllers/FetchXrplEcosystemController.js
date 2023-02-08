@@ -10,8 +10,8 @@ const fetchXrplEcosystem = async (req, res) => {
         data: {},
     };
     try {
-        const { query } = req;
         await validate(req, res);
+        const { query } = req;
         let { limit, page, search } = query;
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;

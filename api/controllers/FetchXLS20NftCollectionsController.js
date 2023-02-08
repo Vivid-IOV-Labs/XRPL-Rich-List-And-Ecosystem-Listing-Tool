@@ -10,8 +10,14 @@ const fetchXls20NftsFromDB = async (req, res) => {
         data: {},
     };
     try {
-        let data = await mongoClient.db('XRPL').collection('xls20Nfts').find().toArray();
         await validate(req, res);
+        const { query } = req;
+        let { limit, page, search } = query;
+        let data = await mongoClient
+            .db('XRPL')
+            .collection('xls20Nfts')
+            .find({ projectName: { $regex: search, $options: 'i' } })
+            .toArray();
 
         if (!data) {
             resObj.data = null;
@@ -22,8 +28,6 @@ const fetchXls20NftsFromDB = async (req, res) => {
             return;
         }
 
-        const { query } = req;
-        let { limit, page } = query;
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;
 
