@@ -15,12 +15,11 @@ const fetchXrplEcosystem = async (req, res) => {
         let { limit, page, search } = query;
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;
-        search = search ? search : '';
-        let data = await mongoClient
-            .db('XRPL')
-            .collection('ecosystem')
-            .find({ name: { $regex: search, $options: 'i' } })
-            .toArray();
+        search = search ?? '';
+
+        const collection = await mongoClient.db('XRPL').collection('ecosystem');
+        let data = await collection.find({ name: { $regex: search, $options: 'i' } }).toArray();
+        resObj.totalCount = await collection.countDocuments({ _id: { $exists: true } });
 
         if (!data) {
             resObj.data = null;
