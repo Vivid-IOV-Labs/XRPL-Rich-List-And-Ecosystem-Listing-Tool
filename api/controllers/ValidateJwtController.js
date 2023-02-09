@@ -22,7 +22,7 @@ const validateJwt = async (req, res) => {
             response(resObj, res);
             return;
         }
-        console.log(token);
+
         const decoded = jwt.verify(token, process.env.TOKEN_KEY);
 
         if (decoded) {
