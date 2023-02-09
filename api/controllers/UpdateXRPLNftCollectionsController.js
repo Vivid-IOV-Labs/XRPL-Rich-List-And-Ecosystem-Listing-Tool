@@ -12,7 +12,7 @@ const errorRes = (errorMsg, resObj, res) => {
 
 const updateNFTs = async (req, res) => {
     const { body } = req;
-    const { id, data } = body;
+    const { _id, ...data } = body;
 
     const resObj = {
         success: false,
@@ -22,14 +22,15 @@ const updateNFTs = async (req, res) => {
     };
 
     try {
-        if (!data || !id || data.length === 0) {
+        if (!data || !_id || data.length === 0) {
             errorRes('Please check the data again', resObj, res);
             return;
         }
 
         const ecosystem = await mongoClient.db('XRPL').collection('xls20Nfts');
-        const result = await ecosystem.updateOne({ _id: ObjectId(id) }, { $set: { ...data } });
-
+        console.log(_id);
+        const result = await ecosystem.updateOne({ _id: ObjectId(_id) }, { $set: { ...data } });
+        console.log(result);
         if (result.modifiedCount === 0) {
             errorRes('No data found', resObj, res);
             return;
