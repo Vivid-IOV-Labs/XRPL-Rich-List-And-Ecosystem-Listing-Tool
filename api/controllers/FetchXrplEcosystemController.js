@@ -18,7 +18,7 @@ const fetchXrplEcosystem = async (req, res) => {
         search = search ?? '';
 
         const collection = await mongoClient.db('XRPL').collection('ecosystem');
-        let data = await collection.find({ name: { $regex: search, $options: 'i' } }).toArray();
+        let data = await collection.find({ projectName: { $regex: search, $options: 'i' } }).toArray();
 
         if (!data) {
             resObj.data = null;

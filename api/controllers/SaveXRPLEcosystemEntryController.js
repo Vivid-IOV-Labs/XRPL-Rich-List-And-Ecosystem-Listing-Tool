@@ -28,9 +28,9 @@ const saveXRPLEcosystemEntry = async (req, res) => {
 
         for (i in data) {
             const record = data[i];
-            const { name, website, twitter, live, isVisible, nickName, category } = record;
+            const { projectName, websiteUrl, twitterUrl, live, isVisible, nickName, category } = record;
 
-            if (!(name && website && twitter && live && isVisible && nickName && category)) {
+            if (!(projectName && websiteUrl && twitterUrl && live && isVisible && nickName && category)) {
                 errorRes(`Please check the parameters again of record ${i + 1}`, resObj, res);
                 return;
             }
