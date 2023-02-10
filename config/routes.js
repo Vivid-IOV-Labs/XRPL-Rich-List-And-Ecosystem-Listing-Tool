@@ -12,6 +12,9 @@ module.exports.routes = {
     'GET /xrpl/ious': { controller: 'FetchXRPLIOUCollectionsController', action: 'fetch' },
     'GET /xrpl/xls20Nfts/info': { controller: 'FetchXLS20NftsForPublicController', action: 'fetch' },
 
+    // Routes to delete values from DB
+    'POST /xrpl/delete': { controller: 'DeleteDocumentController', action: 'delete' },
+
     // Routes to update data
     'POST /xrpl/ecosystem/update': { controller: 'UpdateXRPLEcosystemEntryController', action: 'update' },
     'POST /xrpl/xls20Nfts/update': { controller: 'UpdateXRPLNftCollectionsController', action: 'update' },
