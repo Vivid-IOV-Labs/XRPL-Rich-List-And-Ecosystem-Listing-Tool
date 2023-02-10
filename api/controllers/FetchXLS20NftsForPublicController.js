@@ -16,7 +16,6 @@ const fetchXls20Nfts = async (req, res) => {
         search = search ?? '';
         const collection = await mongoClient.db('XRPL').collection('xls20Nfts');
         let data = await collection.find({ projectName: { $regex: search, $options: 'i' } }).toArray();
-        resObj.totalCount = await collection.countDocuments({ _id: { $exists: true } });
 
         if (!data) {
             resObj.data = null;
@@ -39,6 +38,7 @@ const fetchXls20Nfts = async (req, res) => {
         // slicing based on limit and page number
         const startingIndex = page * limit;
         const endingIndex = limit + startingIndex;
+        resObj.totalCount = data.length;
         data = data.slice(startingIndex, endingIndex);
         data = data.map(({ issuerAccount, projectName }) => ({ issuerAccount, projectName }));
 

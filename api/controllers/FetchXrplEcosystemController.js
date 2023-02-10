@@ -19,7 +19,6 @@ const fetchXrplEcosystem = async (req, res) => {
 
         const collection = await mongoClient.db('XRPL').collection('ecosystem');
         let data = await collection.find({ name: { $regex: search, $options: 'i' } }).toArray();
-        resObj.totalCount = await collection.countDocuments({ _id: { $exists: true } });
 
         if (!data) {
             resObj.data = null;
@@ -41,6 +40,7 @@ const fetchXrplEcosystem = async (req, res) => {
 
         // slicing based on limit and page number
         const startingIndex = page * limit;
+        resObj.totalCount = data.length;
         const endingIndex = limit + startingIndex;
         data = data.slice(startingIndex, endingIndex);
 

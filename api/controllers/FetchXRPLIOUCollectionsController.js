@@ -19,7 +19,6 @@ const fetchIOUs = async (req, res) => {
 
         const collection = await mongoClient.db('XRPL').collection('ious');
         let data = await collection.find({ projectName: { $regex: search, $options: 'i' } }).toArray();
-        resObj.totalCount = await collection.countDocuments({ _id: { $exists: true } });
 
         if (!data) {
             resObj.data = null;
@@ -42,6 +41,7 @@ const fetchIOUs = async (req, res) => {
         // slicing based on limit and page number
         const startingIndex = page * limit;
         const endingIndex = limit + startingIndex;
+        resObj.totalCount = data.length;
         data = data.slice(startingIndex, endingIndex);
 
         resObj.data = data;
