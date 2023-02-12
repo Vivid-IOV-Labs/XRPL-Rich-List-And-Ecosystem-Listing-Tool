@@ -30,12 +30,11 @@ const updateNFTs = async (req, res) => {
             return;
         }
 
-        const ecosystem = await mongoClient.db('XRPL').collection('xls20Nfts');
-        console.log(_id);
-        const result = await ecosystem.updateOne({ _id: ObjectId(_id) }, { $set: { ...data } });
-        console.log(result);
+        const collection = await mongoClient.db('XRPL').collection('xls20Nfts');
+        const result = await collection.updateOne({ _id: ObjectId(_id) }, { $set: { ...data } });
+
         if (result.modifiedCount === 0) {
-            errorRes('No data found', resObj, res);
+            errorRes('Nothing modified', resObj, res);
             return;
         }
 

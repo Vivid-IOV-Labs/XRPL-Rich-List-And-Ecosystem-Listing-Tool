@@ -13,7 +13,7 @@ const errorRes = (errorMsg, resObj, res) => {
 
 const updateEcosystemEntry = async (req, res) => {
     const { body } = req;
-    const { id, data } = body;
+    const { _id, ...data } = body;
 
     const resObj = {
         success: false,
@@ -25,16 +25,16 @@ const updateEcosystemEntry = async (req, res) => {
     try {
         await validate(req, res);
 
-        if (!data || !id || data.length === 0) {
+        if (!data || !_id || data.length === 0) {
             errorRes('Please check the data again', resObj, res);
             return;
         }
 
-        const ecosystem = await mongoClient.db('XRPL').collection('ecosystem');
-        const result = await ecosystem.updateOne({ _id: ObjectId(id) }, { $set: { ...data } });
+        const collection = await mongoClient.db('XRPL').collection('ecosystem');
+        const result = await collection.updateOne({ _id: ObjectId(_id) }, { $set: { ...data } }).then();
 
         if (result.modifiedCount === 0) {
-            errorRes('No data found', resObj, res);
+            errorRes('Nothing modified', resObj, res);
             return;
         }
 
