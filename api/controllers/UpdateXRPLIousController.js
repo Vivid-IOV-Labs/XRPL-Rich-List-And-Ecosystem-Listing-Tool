@@ -33,15 +33,10 @@ const updateIOUs = async (req, res) => {
         const collection = await mongoClient.db('XRPL').collection('ious');
         const result = await collection.updateOne({ _id: ObjectId(_id) }, { $set: { ...data } });
 
-        if (result.modifiedCount === 0) {
-            errorRes('Nothing modified', resObj, res);
-            return;
-        }
-
         resObj.data = null;
         resObj.success = true;
         resObj.error = false;
-        resObj.message = 'Success';
+        resObj.message = result.modifiedCount === 0 ? 'Nothing modified' : 'Success';
         response(resObj, res);
     } catch (error) {
         errorRes('Some error occured', resObj, res);
