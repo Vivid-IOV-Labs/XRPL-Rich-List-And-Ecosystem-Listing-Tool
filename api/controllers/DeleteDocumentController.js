@@ -13,7 +13,7 @@ const deleteADocument = async (req, res) => {
     };
 
     try {
-        // await validate(req, res);
+        await validate(req, res);
         const { body } = req;
         const { collection, _id } = body;
         const collectionDB = await mongoClient.db('XRPL').collection(collection);
