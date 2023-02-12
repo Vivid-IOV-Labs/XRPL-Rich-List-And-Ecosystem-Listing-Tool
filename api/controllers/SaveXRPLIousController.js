@@ -1,5 +1,6 @@
 const mongoClient = Richlist.getDatastore().manager.client;
 const { response } = require('./response');
+const { validate } = require('./ValidateJwtController');
 
 const errorRes = (errorMsg, resObj, res) => {
     resObj.data = null;
@@ -21,6 +22,8 @@ const saveXRPLIous = async (req, res) => {
     };
 
     try {
+        await validate(req, res);
+
         if (!data || data.length === 0) {
             errorRes('Please check the data again', resObj, res);
             return;
