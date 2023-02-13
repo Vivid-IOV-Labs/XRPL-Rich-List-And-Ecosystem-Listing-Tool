@@ -28,6 +28,9 @@ const validateJwt = async (req, res) => {
         if (decoded) {
             const findAddress = await mongoClient.db('XRPL').collection('admin').find({ address: decoded.address }).toArray();
             if (findAddress.length > 0) {
+                delete req.body?.token;
+                delete req.header?.token;
+                delete req.query?.token;
                 return;
             }
         }
