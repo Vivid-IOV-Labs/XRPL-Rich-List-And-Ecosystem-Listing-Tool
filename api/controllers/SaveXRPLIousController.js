@@ -33,7 +33,7 @@ const saveXRPLIous = async (req, res) => {
             const record = data[i];
             const { issuerAccount, projectName, shortDescription } = record;
 
-            if (!(issuerAccount && projectName && shortDescription)) {
+            if (!(issuerAccount?.length > 0 && projectName?.length > 0 && shortDescription?.length > 0)) {
                 errorRes(`Please check the parameters again of record ${i + 1}`, resObj, res);
                 return;
             }
