@@ -34,7 +34,7 @@ const saveXRPLNftCollection = async (req, res) => {
             const { issuerAccount, projectName, shortDescription } = record;
 
             if (!(issuerAccount?.length > 0 && projectName?.length > 0 && shortDescription?.length > 0)) {
-                errorRes(`Please check the parameters again of record ${i + 1}`, resObj, res);
+                errorRes(`Please check the parameters again`, resObj, res);
                 return;
             }
         }

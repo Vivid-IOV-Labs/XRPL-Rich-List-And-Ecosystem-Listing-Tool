@@ -34,7 +34,7 @@ const saveXRPLEcosystemEntry = async (req, res) => {
             const { projectName, websiteUrl, twitterUrl, live, isVisible, nickName, category } = record;
 
             if (!(projectName?.length > 0 && websiteUrl?.length > 0 && twitterUrl?.length > 0 && live?.length > 0 && isVisible?.length > 0 && nickName?.length > 0 && category?.length > 0)) {
-                errorRes(`Please check the parameters again of record ${i + 1}`, resObj, res);
+                errorRes(`Please check the parameters again`, resObj, res);
                 return;
             }
         }
