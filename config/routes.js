@@ -10,6 +10,11 @@ module.exports.routes = {
     'GET /xrpl/ecosystem': { controller: 'FetchXrplEcosystemController', action: 'fetch' },
     'GET /xrpl/xls20Nfts': { controller: 'FetchXLS20NftCollectionsController', action: 'fetch' },
     'GET /xrpl/ious': { controller: 'FetchXRPLIOUCollectionsController', action: 'fetch' },
+
+    // For public
+    'GET /xrpl/internal/ecosystem': { controller: 'FetchXrplEcosystemForPublicController', action: 'fetch' },
+    'GET /xrpl/internal/xls20Nfts': { controller: 'FetchXrplXls20NftForPublicController', action: 'fetch' },
+    'GET /xrpl/internal/ious': { controller: 'FetchXRPLIOUCollectionsForPublicController', action: 'fetch' },
     'GET /xrpl/xls20Nfts/info': { controller: 'FetchXLS20NftsForPublicController', action: 'fetch' },
 
     // Routes to delete values from DB
