@@ -29,7 +29,7 @@ const fetchAccountNfts = async (req, res) => {
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;
 
-        if (limit < 0 || page < 0 || limit > 200) {
+        if (limit < 0 || page < 0 || limit > 10) {
             resObj.data = null;
             resObj.success = false;
             resObj.error = true;
