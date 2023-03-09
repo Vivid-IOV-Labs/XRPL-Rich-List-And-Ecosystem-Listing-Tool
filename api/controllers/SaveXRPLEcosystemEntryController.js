@@ -31,12 +31,13 @@ const saveXRPLEcosystemEntry = async (req, res) => {
 
         for (i in data) {
             const record = data[i];
-            const { projectName, websiteUrl, twitterUrl, live, isVisible, nickName, category } = record;
-
+            let { projectName, websiteUrl, twitterUrl, live, isVisible, nickName, category } = record;
             if (!(projectName?.length > 0 && websiteUrl?.length > 0 && twitterUrl?.length > 0 && live?.length > 0 && isVisible?.length > 0 && nickName?.length > 0 && category?.length > 0)) {
                 errorRes(`Please check the parameters again`, resObj, res);
                 return;
             }
+            live = live.toLowerCase() === 'true' ? true : false;
+            isVisible = isVisible.toLowerCase() === 'true' ? true : false;
         }
 
         const ecosystem = await mongoClient.db('XRPL').collection('ecosystem');

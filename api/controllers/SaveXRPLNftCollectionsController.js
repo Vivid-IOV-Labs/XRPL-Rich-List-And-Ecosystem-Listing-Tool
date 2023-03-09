@@ -31,12 +31,13 @@ const saveXRPLNftCollection = async (req, res) => {
 
         for (i in data) {
             const record = data[i];
-            const { issuerAccount, projectName, shortDescription } = record;
+            const { issuerAccount, projectName, shortDescription, isHighlighted } = record;
 
             if (!(issuerAccount?.length > 0 && projectName?.length > 0 && shortDescription?.length > 0)) {
                 errorRes(`Please check the parameters again`, resObj, res);
                 return;
             }
+            isHighlighted = isHighlighted?.toLowerCase() === 'true' ? true : false;
         }
 
         const ecosystem = await mongoClient.db('XRPL').collection('xls20Nfts');
