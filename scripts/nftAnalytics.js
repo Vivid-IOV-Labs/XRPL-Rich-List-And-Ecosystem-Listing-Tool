@@ -191,7 +191,6 @@ const nftAnalytics = async (percent) => {
         };
 
         await nfTokens.insertOne(result);
-        console.log(JSON.stringify(result, null, '\t'));
     } catch (error) {
         console.log(error);
     } finally {
