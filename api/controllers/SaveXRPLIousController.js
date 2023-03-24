@@ -31,13 +31,12 @@ const saveXRPLIous = async (req, res) => {
 
         for (i in data) {
             const record = data[i];
-            let { issuerAccount, projectName, shortDescription, isHighlighted } = record;
+            let { issuerAccount, projectName, shortDescription } = record;
 
             if (!(issuerAccount?.length > 0 && projectName?.length > 0 && shortDescription?.length > 0)) {
                 errorRes(`Please check the parameters again`, resObj, res);
                 return;
             }
-            isHighlighted = isHighlighted?.toLowerCase() === 'true' ? true : false;
         }
 
         const ecosystem = await mongoClient.db('XRPL').collection('ious');

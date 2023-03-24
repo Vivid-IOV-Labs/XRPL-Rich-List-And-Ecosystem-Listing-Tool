@@ -36,8 +36,6 @@ const saveXRPLEcosystemEntry = async (req, res) => {
                 errorRes(`Please check the parameters again`, resObj, res);
                 return;
             }
-            live = live.toLowerCase() === 'true' ? true : false;
-            isVisible = isVisible.toLowerCase() === 'true' ? true : false;
         }
 
         const ecosystem = await mongoClient.db('XRPL').collection('ecosystem');
