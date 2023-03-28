@@ -32,34 +32,35 @@ const getAccountNfts = async (account, marker = null, client) => {
     }
 };
 
-const findPreviousRank = (issuer, nfts) => {
+const findPreviousRank = (key, nfts) => {
     if (!nfts || nfts.length === 0) {
         return null;
     }
 
     for (i in nfts) {
-        if (nfts[i].issuer === issuer) {
+        if (nfts[i].key === key) {
             return nfts[i].rank;
         }
     }
     return null;
 };
 
-const findPreviousCount = (account, issuer, accounts) => {
-    if (!accounts || accounts.length === 0) {
+const findPreviousCount = (account, key, previousLedgerAccountData) => {
+    if (!previousLedgerAccountData || previousLedgerAccountData.length === 0) {
         return null;
     }
+
     let collections = [];
 
-    for (i in accounts) {
-        if (accounts[i].account === account) {
-            collections = accounts[i].collections;
+    for (i in previousLedgerAccountData) {
+        if (previousLedgerAccountData[i].account === account) {
+            collections = previousLedgerAccountData[i].collections;
             break;
         }
     }
 
     for (i in collections) {
-        if (collections[i].issuer === issuer) {
+        if (collections[i].key === key) {
             return collections[i].rank;
         }
     }
@@ -97,6 +98,7 @@ const nftAnalytics = async (percent) => {
             console.log('Details already present', currentLedgerDetails.hash);
             return;
         }
+
         const lastNfToken = await nfTokens.find().sort({ closeTimeHuman: -1 }).toArray();
         const previousNftokens = lastNfToken[0] ? lastNfToken[0].topPercent.nfts : [];
         const previousAccountList = lastNfToken[0] ? lastNfToken[0].topPercent.accountList : [];
@@ -132,13 +134,14 @@ const nftAnalytics = async (percent) => {
                 for (i in nfts) {
                     const issuer = nfts[i].Issuer;
                     const taxon = nfts[i].NFTokenTaxon;
+                    const nftListKey = `${issuer}_${taxon}`;
                     const tokenId = nfts[i].NFTokenID;
-                    accountNfts[issuer] = accountNfts[issuer] ? accountNfts[issuer] + 1 : 1;
+                    accountNfts[nftListKey] = accountNfts[nftListKey] ? accountNfts[nftListKey] + 1 : 1;
 
-                    if (nfTokenDetails[issuer] && !isIncluded(nfTokenDetails, taxon, tokenId)) {
-                        nfTokenDetails[issuer].push({ taxon, tokenId });
+                    if (nfTokenDetails[nftListKey] && !isIncluded(nfTokenDetails, taxon, tokenId)) {
+                        nfTokenDetails[nftListKey].push({ taxon, tokenId });
                     } else {
-                        nfTokenDetails[issuer] = [{ taxon, tokenId }];
+                        nfTokenDetails[nftListKey] = [{ taxon, tokenId }];
                     }
                 }
 
@@ -147,35 +150,41 @@ const nftAnalytics = async (percent) => {
                     .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
                 let rank = 1;
+
                 for (key in sortednf) {
                     const prevRank = findPreviousCount(account, key, previousAccountList);
+                    const [issuer, taxon] = key.split('_');
                     obj.collections.push({
-                        issuer: key,
+                        key,
+                        issuer,
+                        taxon,
                         rank,
                         nfts: nfTokenDetails[key],
-                        totalNfts: nfTokenDetails[key].length,
-                        change: prevRank ? prevRank - nfTokenDetails[key].length : 0,
+                        totalNfts: Object.keys(nfTokenDetails[key]).length,
+                        change: prevRank ? prevRank - rank : 0,
                     });
                     rank += 1;
                 }
+
                 accountWithCorrespondingNfts.push(obj);
             }
         }
 
         const currLedgerNfts = Object.entries(accountNfts).sort((a, b) => b[1] - a[1]);
         const nfts = currLedgerNfts.map((nft, index) => {
-            const issuer = nft[0];
-            const rank = index + 1;
+            const [issuer, taxon] = nft[0].split('_');
             const count = nft[1];
-            const prevRank = findPreviousRank(issuer, previousNftokens);
+            const rank = index + 1;
+            const prevRank = findPreviousRank(nft[0], previousNftokens);
             let directionOfChange = prevRank ? prevRank - rank : 0;
 
             return {
                 issuer,
+                taxon,
                 rank,
                 count,
                 directionOfChange,
-                nfts: nfTokenDetails[issuer],
+                nfts: nfTokenDetails[nft[0]],
             };
         });
 
