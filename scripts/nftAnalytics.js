@@ -160,7 +160,6 @@ const nftAnalytics = async (percent) => {
                         taxon,
                         rank,
                         nfts: nfTokenDetails[key],
-                        totalNfts: Object.keys(nfTokenDetails[key]).length,
                         change: prevRank ? prevRank - rank : 0,
                     });
                     rank += 1;
