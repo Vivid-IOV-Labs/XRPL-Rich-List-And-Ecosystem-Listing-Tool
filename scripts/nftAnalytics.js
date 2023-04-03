@@ -133,7 +133,7 @@ const nftAnalytics = async (percent) => {
             if (nfts.length > 0) {
                 for (i in nfts) {
                     const issuer = nfts[i].Issuer;
-                    const taxon = nfts[i].NFTokenTaxon;
+                    const taxon = parseInt(nfts[i].NFTokenTaxon);
                     const nftListKey = `${issuer}_${taxon}`;
                     const tokenId = nfts[i].NFTokenID;
                     accountNfts[nftListKey] = accountNfts[nftListKey] ? accountNfts[nftListKey] + 1 : 1;
@@ -157,7 +157,7 @@ const nftAnalytics = async (percent) => {
                     obj.collections.push({
                         key,
                         issuer,
-                        taxon,
+                        taxon: parseInt(taxon),
                         rank,
                         nfts: nfTokenDetails[key],
                         change: prevRank ? prevRank - rank : 0,
@@ -179,7 +179,7 @@ const nftAnalytics = async (percent) => {
 
             return {
                 issuer,
-                taxon,
+                taxon: parseInt(taxon),
                 rank,
                 count,
                 directionOfChange,
