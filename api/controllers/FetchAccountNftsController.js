@@ -11,7 +11,7 @@ const fetchAccountNfts = async (req, res) => {
     try {
         const { query } = req;
         let { limit, page, nftsInfo } = query;
-        const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ closeTimeHuman: -1 }).toArray();
+        const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ _id: -1 }).toArray();
         const currData = data[0] ? data[0] : null;
 
         if (!currData || !currData.topPercent || !currData.topPercent.accountList) {

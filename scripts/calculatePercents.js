@@ -9,7 +9,7 @@ const calculatePercents = async () => {
         const db = await mongoClient.db('Richlist');
         const percentsCollection = await db.collection('percents');
 
-        const ledgerCollection = await db.collection('ledger').find().sort({ closeTimeHuman: -1 }).toArray();
+        const ledgerCollection = await db.collection('ledger').find().sort({ _id: -1 }).toArray();
         const { hash, ledgeIndex, closeTimeHuman, totalCoins } = ledgerCollection[0];
         // Check if percent already exists
         const doesExist = await percentsCollection.find({ hash }).toArray();

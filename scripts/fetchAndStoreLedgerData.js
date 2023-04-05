@@ -66,8 +66,8 @@ const richlist = async (ledgerIndex = null, marker = null) => {
     let currentLedgerHash = '';
 
     try {
-        await client.connect();
         console.log('Fetching data from XRPL');
+        await client.connect();
 
         await mongoClient.connect();
         const db = await mongoClient.db('Richlist');
@@ -125,7 +125,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
                 i += 1;
 
                 // Batch insert in DB
-                if (i === 2000) {
+                if (i === 200) {
                     if (j % 4 === 0) {
                         console.log('Reconnecting websocket');
                         await client.disconnect();

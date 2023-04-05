@@ -88,7 +88,7 @@ const nftAnalytics = async (percent) => {
 
         const db = await mongoClient.db('Richlist');
 
-        const ledgerCollection = await db.collection('ledger').find().sort({ closeTimeHuman: -1 }).toArray();
+        const ledgerCollection = await db.collection('ledger').find().sort({ _id: -1 }).toArray();
         const currentLedgerDetails = ledgerCollection[0];
 
         const nfTokens = await db.collection('nfTokens');
@@ -99,7 +99,7 @@ const nftAnalytics = async (percent) => {
             return;
         }
 
-        const lastNfToken = await nfTokens.find().sort({ closeTimeHuman: -1 }).toArray();
+        const lastNfToken = await nfTokens.find().sort({ _id: -1 }).toArray();
         const previousNftokens = lastNfToken[0] ? lastNfToken[0].topPercent.nfts : [];
         const previousAccountList = lastNfToken[0] ? lastNfToken[0].topPercent.accountList : [];
 
