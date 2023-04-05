@@ -4,7 +4,7 @@ const { MongoClient } = require('mongodb');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
-const getAccountNfts = async (account, marker = null, client) => {
+const getAccountNfts = async (account, marker = null, client, index) => {
     try {
         const payload = {
             command: 'account_nfts',
@@ -16,12 +16,12 @@ const getAccountNfts = async (account, marker = null, client) => {
         if (marker) {
             payload.marker = marker;
         }
-        console.log(`Fetching NFTs of account: ${account}, with marker: ${marker}`);
+        console.log(`[${index}]: Fetching NFTs of account: ${account}, with marker: ${marker}`);
         const response = await client.request(payload);
         let nfts = response.result.account_nfts;
 
         if (response.result.marker) {
-            const moreNfts = await getAccountNfts(account, response.result.marker, client);
+            const moreNfts = await getAccountNfts(account, response.result.marker, client, index);
             nfts = [...nfts, ...moreNfts];
         }
 
@@ -127,8 +127,16 @@ const nftAnalytics = async (percent) => {
         for (index in currAccounts) {
             const account = currAccounts[index].account;
             currBalance += currAccounts[index].balance;
-            const nfts = await getAccountNfts(account, null, client);
+            const nfts = await getAccountNfts(account, null, client, index);
             let obj = { account, balance: currAccounts[index].balance, collections: [] };
+
+            // Temporary reconnection logic
+            if (index === 2000) {
+                console.log('Re-connecting again...');
+                await client.disconnect();
+                await client.connect();
+                console.log('Re-connected');
+            }
 
             if (nfts.length > 0) {
                 for (i in nfts) {
