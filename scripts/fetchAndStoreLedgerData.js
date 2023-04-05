@@ -125,7 +125,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
                 i += 1;
 
                 // Batch insert in DB
-                if (i === 200) {
+                if (i === 2000) {
                     if (j % 4 === 0) {
                         console.log('Reconnecting websocket');
                         await client.disconnect();
