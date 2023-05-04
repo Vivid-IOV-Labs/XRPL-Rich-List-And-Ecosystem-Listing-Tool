@@ -10,13 +10,20 @@ const fetchIOUs = async (req, res) => {
     };
     try {
         const { query } = req;
-        let { limit, page, search } = query;
+        let { limit, page, search, searchKey } = query;
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;
         search = search ?? '';
+        searchKey = searchKey ?? '';
 
         const collection = await mongoClient.db('XRPL').collection('ious');
-        let data = await collection.find({ projectName: { $regex: search, $options: 'i' } }).toArray();
+        let data = [];
+
+        if (search && searchKey) {
+            data = await collection.find({ [searchKey]: { $regex: search, $options: 'i' } }).toArray();
+        } else {
+            data = await collection.find().toArray();
+        }
 
         if (!data) {
             resObj.data = null;
