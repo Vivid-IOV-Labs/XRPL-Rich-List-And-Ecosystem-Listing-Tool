@@ -12,9 +12,6 @@ const errorRes = (errorMsg, resObj, res) => {
 };
 
 const updateNFTs = async (req, res) => {
-    const { body } = req;
-    const { _id, ...data } = body;
-
     const resObj = {
         success: false,
         error: false,
@@ -24,6 +21,8 @@ const updateNFTs = async (req, res) => {
 
     try {
         await validate(req, res);
+        const { body } = req;
+        const { _id, ...data } = body;
 
         if (!data || !_id || data.length === 0) {
             errorRes('Please check the data again', resObj, res);

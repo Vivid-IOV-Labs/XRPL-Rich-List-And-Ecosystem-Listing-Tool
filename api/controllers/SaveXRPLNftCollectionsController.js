@@ -11,9 +11,6 @@ const errorRes = (errorMsg, resObj, res) => {
 };
 
 const saveXRPLNftCollection = async (req, res) => {
-    const { body } = req;
-    const { data } = body;
-
     const resObj = {
         success: false,
         error: false,
@@ -23,6 +20,8 @@ const saveXRPLNftCollection = async (req, res) => {
 
     try {
         await validate(req, res);
+        const { body } = req;
+        const { data } = body;
 
         if (!data || data.length === 0) {
             errorRes('Please check the data again', resObj, res);
@@ -31,9 +30,9 @@ const saveXRPLNftCollection = async (req, res) => {
 
         for (i in data) {
             const record = data[i];
-            const { issuerAccount, projectName, shortDescription } = record;
+            const { issuerAddress, collectionName } = record;
 
-            if (!(issuerAccount?.length > 0 && projectName?.length > 0 && shortDescription?.length > 0)) {
+            if (!(issuerAddress?.length > 0 && collectionName?.length > 0)) {
                 errorRes(`Please check the parameters again`, resObj, res);
                 return;
             }

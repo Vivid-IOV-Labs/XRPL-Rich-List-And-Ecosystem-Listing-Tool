@@ -11,9 +11,6 @@ const errorRes = (errorMsg, resObj, res) => {
 };
 
 const saveXRPLIous = async (req, res) => {
-    const { body } = req;
-    const { data } = body;
-
     const resObj = {
         success: false,
         error: false,
@@ -23,6 +20,8 @@ const saveXRPLIous = async (req, res) => {
 
     try {
         await validate(req, res);
+        const { body } = req;
+        const { data } = body;
 
         if (!data || data.length === 0) {
             errorRes('Please check the data again', resObj, res);
