@@ -48,7 +48,7 @@ const fetchXls20Nfts = async (req, res) => {
         const endingIndex = limit + startingIndex;
         resObj.totalCount = data.length;
         data = data.slice(startingIndex, endingIndex);
-        data = data.map(({ issuerAccount, projectName }) => ({ issuerAccount, projectName }));
+        data = data.map(({ issuerAddress, collectionName }) => ({ issuerAccount: issuerAddress, projectName: collectionName }));
 
         resObj.data = data;
         resObj.success = true;
