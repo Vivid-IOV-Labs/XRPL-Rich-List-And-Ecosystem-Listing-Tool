@@ -90,7 +90,6 @@ const richlist = async (ledgerIndex = null, marker = null) => {
             currentLedgerHash = ledger.hash;
 
             let stats = {
-                _id: ledger.hash,
                 hash: ledger.hash,
                 ledgeIndex: parseInt(ledger.ledger_index),
                 closeTimeHuman: ledger.close_time_human,
@@ -105,7 +104,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
             currentLedgerHash = ledger.hash;
         }
 
-        console.log('Ledger Hash:', currentLedgerHash);
+        console.log(`Ledger Hash: ${currentLedgerHash}`);
 
         // Iterate till the marker is undefined
         while (marker !== 'undefined') {
@@ -125,7 +124,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
                 i += 1;
 
                 // Batch insert in DB
-                if (i === 2000) {
+                if (i === 10000) {
                     if (j % 4 === 0) {
                         console.log('Reconnecting websocket');
                         await client.disconnect();
@@ -134,7 +133,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
                     }
 
                     await accountCollection.insertMany(accountsArray);
-                    console.log(`${i} Documents Inserted`);
+                    console.log(`[${i}] Documents Inserted`);
                     accountsArray = [];
                     i = 0;
                     j += 1;
@@ -151,7 +150,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
         // If some accountCollection are present in the array insert in DB
         if (accountsArray.length > 0) {
             await accountCollection.insertMany(accountsArray);
-            console.log(`${i} Documents Inserted, Current marker ${marker}`);
+            console.log(`[${i}] Documents Inserted, Current marker ${marker}`);
             accountsArray = [];
             i = 0;
         }
