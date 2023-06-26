@@ -13,4 +13,7 @@ npm run calculate:percents
 # Run the calculate:nftAnalytics command
 npm run calculate:nftAnalytics
 
+# Run update:trackedProjects command
+npm run update:trackedProjects
+
 echo "Scripts ran successfully!"
