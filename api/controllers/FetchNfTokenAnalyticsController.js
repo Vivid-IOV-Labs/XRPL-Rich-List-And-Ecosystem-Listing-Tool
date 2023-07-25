@@ -23,10 +23,6 @@ const fetchNfTokens = async (req, res) => {
             return;
         }
 
-        if (currData.topPercent.accountList) {
-            delete currData.topPercent.accountList;
-        }
-
         if (nftsInfo === 'false') {
             const list = currData.topPercent.nftList;
             delete currData.topPercent.nftList;

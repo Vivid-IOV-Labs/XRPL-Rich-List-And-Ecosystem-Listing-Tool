@@ -1,19 +1,29 @@
 #!/bin/sh
 
-echo "Running your scripts..."
+# Create a variable to hold the log file path
+LOG_FILE="./logs/cron.log"
+
+echo "Running your scripts..." >> $LOG_FILE
 
 export PATH="$PATH:/home/ubuntu/.nvm/versions/node/v16.18.1/bin"
 
 # Run the fetch:ledger-data command
-npm run fetch:ledger-data
+echo "Running fetch:ledger-data..." >> $LOG_FILE
+npm run fetch:ledger-data >> $LOG_FILE 2>&1 &
+
+# Run the update:trackedProjects command
+echo "Running update:trackedProjects..." >> $LOG_FILE
+npm run update:trackedProjects >> $LOG_FILE 2>&1 &
+
+# This will make the script wait for all background jobs to finish before moving on
+wait 
 
 # Run the calculate:percents command
-npm run calculate:percents
+echo "Running calculate:percents..." >> $LOG_FILE
+npm run calculate:percents >> $LOG_FILE 2>&1
 
-# Run the calculate:nftAnalytics command
-npm run calculate:nftAnalytics
+# Run calculate:nftAnalytics command
+echo "Running calculate:nftAnalytics..." >> $LOG_FILE
+npm run calculate:nftAnalytics >> $LOG_FILE 2>&1
 
-# Run update:trackedProjects command
-npm run update:trackedProjects
-
-echo "Scripts ran successfully!"
+echo "Scripts ran successfully!" >> $LOG_FILE

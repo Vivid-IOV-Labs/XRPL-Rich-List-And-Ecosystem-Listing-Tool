@@ -27,10 +27,10 @@
         "pm2": "^5.2.2"
     },
     "scripts": {
-        "fetch:ledger-data": "node ./scripts/fetchAndStoreLedgerData.js",
-        "calculate:percents": "node ./scripts/calculatePercents.js",
-        "calculate:nftAnalytics": "node ./scripts/nftAnalytics.js",
-        "update:trackedProjects": "node ./scripts/trackedProjects.js",
+        "fetch:ledger-data": "node --max-old-space-size=8192 ./scripts/fetchAndStoreLedgerData.js",
+        "calculate:percents": "node --max-old-space-size=8192 ./scripts/calculatePercents.js",
+        "calculate:nftAnalytics": "node --max-old-space-size=8192 ./scripts/nftAnalytics.js",
+        "update:trackedProjects": "node --max-old-space-size=8192 ./scripts/trackedProjects.js",
         "start:sails": "NODE_ENV=production node app.js",
         "test": "npm run lint && npm run custom-tests && echo 'Done.'",
         "lint": "./node_modules/eslint/bin/eslint.js . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",

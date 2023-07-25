@@ -13,8 +13,9 @@ const fetchAccountNfts = async (req, res) => {
         let { limit, page, nftsInfo } = query;
         const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ _id: -1 }).toArray();
         const currData = data[0] ? data[0] : null;
+        let accountList = await mongoClient.db('Richlist').collection('accountNfts').find().toArray();
 
-        if (!currData || !currData.topPercent || !currData.topPercent.accountList) {
+        if (!currData || !currData.topPercent || !accountList) {
             resObj.data = null;
             resObj.success = false;
             resObj.error = true;
@@ -23,8 +24,6 @@ const fetchAccountNfts = async (req, res) => {
             return;
         }
 
-        let accountList = currData.topPercent.accountList;
-        delete currData.topPercent.accountList;
         delete currData.topPercent.nftList;
         limit = limit ? parseInt(limit) : 10;
         page = page ? parseInt(page) - 1 : 0;

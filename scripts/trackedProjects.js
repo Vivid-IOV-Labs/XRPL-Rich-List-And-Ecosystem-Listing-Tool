@@ -16,6 +16,7 @@ const trackedProjects = async () => {
 
         const trackedAccountsCollection = await mongoClient.db('XRPL').collection("xls20Nfts");
         const trackedAccounts = await trackedAccountsCollection.find().toArray();
+        console.log("Total Projects: ", trackedAccounts.length);
 
         for (i in trackedAccounts) {
             const { issuerAddress, collectionName } = trackedAccounts[i];

@@ -92,7 +92,12 @@ const nftAnalytics = async (percent) => {
         const currentLedgerDetails = ledgerCollection[0];
 
         const nfTokens = await db.collection('nfTokens');
+        const accountWithCorrespondingNfts = await db.collection('accountNfts');
+        const previousAccountList = await accountWithCorrespondingNfts.find().toArray();
         const checkIfExists = await nfTokens.find({ hash: currentLedgerDetails.hash }).toArray();
+
+        // Delete previous account list
+        await accountWithCorrespondingNfts.deleteMany({});
 
         if (checkIfExists.length > 0) {
             console.log('Details already present', currentLedgerDetails.hash);
@@ -101,7 +106,6 @@ const nftAnalytics = async (percent) => {
 
         const lastNfToken = await nfTokens.find().sort({ _id: -1 }).toArray();
         const previousNftokens = lastNfToken[0] ? lastNfToken[0].topPercent.nfts : [];
-        const previousAccountList = lastNfToken[0] ? lastNfToken[0].topPercent.accountList : [];
 
         console.log('Getting all accounts');
         const accountCollection = await db.collection('account').find().toArray();
@@ -117,7 +121,6 @@ const nftAnalytics = async (percent) => {
         console.log('Total Accounts:', currAccounts.length);
         const accountNfts = {};
         const nfTokenDetails = {};
-        const accountWithCorrespondingNfts = [];
 
         if (!currAccounts) {
             console.log('No Data Found');
@@ -173,7 +176,7 @@ const nftAnalytics = async (percent) => {
                     rank += 1;
                 }
 
-                accountWithCorrespondingNfts.push(obj);
+                accountWithCorrespondingNfts.insertOne(obj);
             }
         }
 
@@ -202,7 +205,6 @@ const nftAnalytics = async (percent) => {
                 numberOfAccounts: currAccounts.length,
                 aggregateBalances: currBalance,
                 nftList: nfts,
-                accountList: accountWithCorrespondingNfts,
             },
         };
 
