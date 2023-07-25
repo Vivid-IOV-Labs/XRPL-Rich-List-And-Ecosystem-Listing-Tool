@@ -5,6 +5,7 @@ module.exports.routes = {
     'GET /richlist': { controller: 'FetchRichlistController', action: 'fetch' },
     'GET /richlist/nfts': { controller: 'FetchNfTokenAnalyticsController', action: 'fetch' },
     'GET /richlist/account-nfts': { controller: 'FetchAccountNftsController', action: 'fetch' },
+    'GET /richlist/percentage': { controller: 'FetchRichlistController', action: 'fetchPercentageData' },
 
     // NFTs, Ecosystem and IOUs related stuff
     'GET /xrpl/ecosystem': { controller: 'FetchXrplEcosystemController', action: 'fetch' },
