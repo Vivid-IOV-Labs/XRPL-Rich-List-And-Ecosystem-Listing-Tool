@@ -9,7 +9,9 @@ const trackedProjects = async () => {
     try {
         const client = new Client(process.env.WSS_CLIENT_URL);
         const mongoClient = new MongoClient(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
+        const headers = new fetch.Headers({
+            'x-bithomp-token': process.env.BITHOMP_API_KEY
+        })
         console.log('Fetching data...');
         await client.connect();
         await mongoClient.connect();
@@ -25,13 +27,15 @@ const trackedProjects = async () => {
             let objForTaxonSearch = {};
 
             do {
-                const nfts = await fetch(`https://bithomp.com/api/cors/v2/nfts?list=nfts&issuer=${issuerAddress}&marker=${next_marker}`, {
-                    headers: {
-                        'x-bithomp-token': process.env.BITHOMP_API_KEY
-                    }
-                }).then(
+                const nfts = await fetch(`https://bithomp.com/api/cors/v2/nfts?list=nfts&issuer=${issuerAddress}&marker=${next_marker}`).then(
                     res => res.json()
                 );
+
+                if (nfts?.result && nfts.result === 'failed') {
+                    console.error(nfts);
+                    throw Error(nfts);
+                }
+
                 next_marker = nfts.marker;
 
                 nfts.nfts?.forEach(nft => {
@@ -39,7 +43,7 @@ const trackedProjects = async () => {
                     nftokenTaxon = parseInt(nftokenTaxon);
                     if (!objForTaxonSearch[nftokenTaxon] && issuer === issuerAddress) {
                         objForTaxonSearch[nftokenTaxon] = true;
-                        console.log(`[${collectionName}] : ${nftokenTaxon}`);
+                        console.log(`${i}. [${collectionName}] : ${nftokenTaxon}`);
                         taxons.push(nftokenTaxon)
                     }
                 });
