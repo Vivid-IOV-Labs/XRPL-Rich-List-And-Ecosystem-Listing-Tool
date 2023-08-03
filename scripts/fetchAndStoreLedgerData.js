@@ -78,7 +78,15 @@ const richlist = async (ledgerIndex = null, marker = null) => {
 
         const accountCollection = await db.collection('account');
         const ledgerCollection = await db.collection('ledger');
+        const addressesToSkipArray = await db.collection('addressesToSkip').find().toArray();
+        const addressesToSkip = {};
         console.log('Connected to mongodb');
+
+        console.log('Getting addresses to skip...');
+        addressesToSkipArray.forEach(({ address }) => {
+            addressesToSkip[address] = true;
+        })
+        console.log('Processing...')
 
         let i = 0;
         let j = 0;
@@ -113,12 +121,14 @@ const richlist = async (ledgerIndex = null, marker = null) => {
             // Manipulate the data from xrpl
             if (data.result.state !== null) {
                 data.result.state.forEach((i) => {
-                    accountsArray.push({
-                        // eslint-disable-next-line camelcase
-                        ledger_id: ledger.hash,
-                        account: i.Account,
-                        balance: parseInt(i.Balance) / 1000000,
-                    });
+                    if (!addressesToSkip[i.Account]) {
+                        accountsArray.push({
+                            // eslint-disable-next-line camelcase
+                            ledger_id: ledger.hash,
+                            account: i.Account,
+                            balance: parseInt(i.Balance) / 1000000,
+                        });
+                    }
                 });
 
                 i += 1;
