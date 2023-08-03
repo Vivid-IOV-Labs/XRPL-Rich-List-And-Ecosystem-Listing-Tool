@@ -40,8 +40,10 @@ const fetchRichlistPercentageData = async (req, res) => {
             const percentData = data.map((doc) => {
                 const percentageData = doc.percents.map((percentObj) => {
                     return {
-                        x: new Date(doc.ledgerCloseTime).getTime(),
-                        y: percentObj.minBalance,
+                        graph: {
+                            x: new Date(doc.ledgerCloseTime).getTime(),
+                            y: percentObj.minBalance,
+                        },
                         ...percentObj
                     };
                 });
