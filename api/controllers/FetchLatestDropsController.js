@@ -21,11 +21,11 @@ const fetchDropsFromDB = async (req, res) => {
         }
 
         // Filtering data to keep only documents where mintDate is present and older than current date
-        const currentDate = new Date();
+        const currentDate = new Date().getTime();
         data = data.filter(doc => {
             if (doc.mintDate) {
-                const docMintDate = new Date(doc.mintDate);
-                return docMintDate < currentDate;
+                const docMintDate = new Date(doc.mintDate).getTime();
+                return docMintDate > currentDate;
             }
             return false;
         });
@@ -64,5 +64,5 @@ const fetchDropsFromDB = async (req, res) => {
 };
 
 module.exports = {
-    drops: fetchDropsFromDB,
+    fetch: fetchDropsFromDB,
 };
