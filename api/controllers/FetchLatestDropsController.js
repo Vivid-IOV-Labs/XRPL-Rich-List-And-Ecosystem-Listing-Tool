@@ -9,7 +9,7 @@ const fetchDropsFromDB = async (req, res) => {
         data: {},
     };
     try {
-        let data = await mongoClient.db('XRPL').collection('xls20Nfts').find().toArray();
+        let data = await mongoClient.db('XRPL').collection('xls20Nfts').find({ "isDropsEnabled": true }).toArray();
 
         if (!data) {
             resObj.data = null;
@@ -19,16 +19,6 @@ const fetchDropsFromDB = async (req, res) => {
             response(resObj, res);
             return;
         }
-
-        // Filtering data to keep only documents where mintDate is present and older than current date
-        const currentDate = new Date().getTime();
-        data = data.filter(doc => {
-            if (doc.mintDate) {
-                const docMintDate = new Date(doc.mintDate).getTime();
-                return docMintDate > currentDate;
-            }
-            return false;
-        });
 
         const { query } = req;
         let { limit, page } = query;
