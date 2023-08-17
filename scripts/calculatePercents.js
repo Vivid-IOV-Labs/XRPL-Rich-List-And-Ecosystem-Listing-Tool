@@ -26,7 +26,7 @@ const calculatePercents = async () => {
             return a.balance > b.balance ? -1 : b.balance > a.balance ? 1 : 0;
         });
         const numberOfAccounts = accounts.length;
-        const percentAccountChange = parseFloat((((numberOfAccounts - prevNumberOfAccounts) / prevNumberOfAccounts) * 100).toFixed(2));
+        const percentAccountChange = parseFloat((((numberOfAccounts - prevNumberOfAccounts) / prevNumberOfAccounts)).toFixed(2));
         let circulatingSupply = 0.0;
         const percentResults = [];
 
