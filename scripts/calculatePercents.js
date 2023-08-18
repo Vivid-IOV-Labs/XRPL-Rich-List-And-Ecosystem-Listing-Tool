@@ -10,7 +10,7 @@ const calculatePercents = async () => {
         const percentsCollection = await db.collection('percents');
 
         const ledgerCollection = await db.collection('ledger').find().sort({ _id: -1 }).toArray();
-        const { hash, ledgeIndex, closeTimeHuman, totalCoins, totalAccounts: prevNumberOfAccounts } = ledgerCollection[0];
+        const { hash, ledgeIndex, closeTimeHuman, totalCoins } = ledgerCollection[0];
         // Check if percent already exists
         const doesExist = await percentsCollection.find({ hash }).toArray();
         if (doesExist.length > 0) {
@@ -26,7 +26,8 @@ const calculatePercents = async () => {
             return a.balance > b.balance ? -1 : b.balance > a.balance ? 1 : 0;
         });
         const numberOfAccounts = accounts.length;
-        const percentAccountChange = parseFloat((((numberOfAccounts - prevNumberOfAccounts) / prevNumberOfAccounts)).toFixed(2));
+        const { totalAccounts: prevNumberOfAccounts } = percentsCollection.find().sort({ _id: -1 }).toArray()[0];
+        const percentAccountChange = parseFloat((((numberOfAccounts - prevNumberOfAccounts) / prevNumberOfAccounts) * 100).toFixed(2));
         let circulatingSupply = 0.0;
         const percentResults = [];
 
