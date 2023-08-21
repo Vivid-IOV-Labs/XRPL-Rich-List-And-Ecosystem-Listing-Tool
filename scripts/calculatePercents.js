@@ -26,8 +26,9 @@ const calculatePercents = async () => {
             return a.balance > b.balance ? -1 : b.balance > a.balance ? 1 : 0;
         });
         const numberOfAccounts = accounts.length;
-        const { totalAccounts: prevNumberOfAccounts } = percentsCollection.find().sort({ _id: -1 }).toArray()[0];
-        const percentAccountChange = parseFloat((((numberOfAccounts - prevNumberOfAccounts) / prevNumberOfAccounts) * 100).toFixed(2));
+        const lastPercentsCollection = await percentsCollection.find().sort({ _id: -1 }).limit(1).toArray();
+        const numberOfAccountsChange = numberOfAccounts - lastPercentsCollection[0].totalAccounts;
+        const percentAccountChange = parseFloat(((numberOfAccountsChange / lastPercentsCollection[0].totalAccounts) * 100).toFixed(2));
         let circulatingSupply = 0.0;
         const percentResults = [];
 
@@ -52,6 +53,7 @@ const calculatePercents = async () => {
             circulatingSupply,
             totalSupply: totalCoins,
             totalAccounts: numberOfAccounts,
+            numberOfAccountsChange,
             percentAccountChange,
             percents: percentResults,
         });
