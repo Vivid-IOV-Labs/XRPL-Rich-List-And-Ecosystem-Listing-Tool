@@ -33,7 +33,7 @@ const fetchNfTokens = async (req, res) => {
             top = parseInt(top);
             currData.topPercent.nftList = currData.topPercent.nftList.slice(0, top);
         }
-
+        currData.closeTimeHuman = new Date(currData.closeTimeHuman).toISOString();
         resObj.data = currData;
         resObj.success = true;
         resObj.error = false;

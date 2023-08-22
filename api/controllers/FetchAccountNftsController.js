@@ -53,6 +53,7 @@ const fetchAccountNfts = async (req, res) => {
         }
 
         currData.topPercent.accountList = accountList;
+        currData.closeTimeHuman = new Date(currData.closeTimeHuman).toISOString();
         resObj.data = currData;
         resObj.success = true;
         resObj.error = false;
