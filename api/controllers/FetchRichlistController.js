@@ -13,7 +13,6 @@ const fetchRichlist = async (req, res) => {
 
     try {
         const data = await mongoClient.db('Richlist').collection('percents').find().sort({ _id: -1 }).limit(10).toArray();
-        console.log(data);
 
         if (data.length) {
             // Create a dictionary where the keys are the percentages and the values are the graph data for those percentages
@@ -40,7 +39,9 @@ const fetchRichlist = async (req, res) => {
                 };
                 return percentageData;
             });
-            resObj.data = data[0] ? data[0] : null;
+
+            data[0].ledgerCloseTime = new Date(data[0].ledgerCloseTime).toISOString();
+            resObj.data = data[0];
             resObj.success = true;
             resObj.error = false;
             resObj.message = 'Success';
