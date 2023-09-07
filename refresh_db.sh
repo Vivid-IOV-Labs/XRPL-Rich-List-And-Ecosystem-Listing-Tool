@@ -9,14 +9,11 @@ export PATH="$PATH:/home/ubuntu/.nvm/versions/node/v16.18.1/bin"
 
 # Run the fetch:ledger-data command
 echo "Running fetch:ledger-data..." >> $LOG_FILE
-npm run fetch:ledger-data >> $LOG_FILE 2>&1 &
+npm run fetch:ledger-data >> $LOG_FILE 2>&1
 
 # Run the update:trackedProjects command
 echo "Running update:trackedProjects..." >> $LOG_FILE
-npm run update:trackedProjects >> $LOG_FILE 2>&1 &
-
-# This will make the script wait for all background jobs to finish before moving on
-wait 
+npm run update:trackedProjects >> $LOG_FILE 2>&1
 
 # Run the calculate:percents command
 echo "Running calculate:percents..." >> $LOG_FILE
