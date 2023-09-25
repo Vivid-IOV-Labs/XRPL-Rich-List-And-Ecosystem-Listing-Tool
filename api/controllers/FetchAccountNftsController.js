@@ -1,4 +1,5 @@
 const mongoClient = Richlist.getDatastore().manager.client;
+const analytics = require('./analytics');
 const { response } = require('./response');
 
 const fetchAccountNfts = async (req, res) => {
@@ -11,6 +12,9 @@ const fetchAccountNfts = async (req, res) => {
     try {
         const { query } = req;
         let { limit, page, nftsInfo } = query;
+
+        await analytics('xrp_richlist_nft_favorites_by_accounts');
+
         const data = await mongoClient.db('Richlist').collection('nfTokens').find().sort({ _id: -1 }).toArray();
         const currData = data[0] ? data[0] : null;
         let accountList = await mongoClient.db('Richlist').collection('accountNfts').find().toArray();

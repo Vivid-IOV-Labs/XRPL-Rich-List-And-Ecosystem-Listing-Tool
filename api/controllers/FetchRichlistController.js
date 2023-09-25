@@ -1,4 +1,5 @@
 const mongoClient = Richlist.getDatastore().manager.client;
+const analytics = require('./analytics');
 const { response } = require('./response');
 
 const fetchRichlist = async (req, res) => {
@@ -13,6 +14,8 @@ const fetchRichlist = async (req, res) => {
 
     try {
         const data = await mongoClient.db('Richlist').collection('percents').find().sort({ _id: -1 }).limit(10).toArray();
+
+        await analytics('xrp_richlist');
 
         if (data.length) {
             // Create a dictionary where the keys are the percentages and the values are the graph data for those percentages

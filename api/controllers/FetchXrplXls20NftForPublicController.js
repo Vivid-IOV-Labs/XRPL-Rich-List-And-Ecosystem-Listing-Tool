@@ -1,4 +1,5 @@
 const mongoClient = Richlist.getDatastore().manager.client;
+const analytics = require('./analytics');
 const { response } = require('./response');
 
 const fetchXls20NftsFromDB = async (req, res) => {
@@ -13,6 +14,9 @@ const fetchXls20NftsFromDB = async (req, res) => {
         let { limit, page, search, searchKey } = query;
         search = search ?? '';
         searchKey = searchKey ?? '';
+
+        await analytics('xrp_tracked_collections');
+
         const collection = await mongoClient.db('XRPL').collection('xls20Nfts');
         let data = [];
 

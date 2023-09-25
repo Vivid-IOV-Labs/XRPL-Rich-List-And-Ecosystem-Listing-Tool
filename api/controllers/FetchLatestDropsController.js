@@ -1,4 +1,5 @@
 const mongoClient = Richlist.getDatastore().manager.client;
+const analytics = require('./analytics');
 const { response } = require('./response');
 
 const fetchDropsFromDB = async (req, res) => {
@@ -10,6 +11,8 @@ const fetchDropsFromDB = async (req, res) => {
     };
     try {
         let data = await mongoClient.db('XRPL').collection('xls20Nfts').find({ "isDropsEnabled": true }).toArray();
+
+        await analytics('xrp_nft_drops');
 
         if (!data) {
             resObj.data = null;
@@ -35,11 +38,12 @@ const fetchDropsFromDB = async (req, res) => {
         }
 
         // slicing based on limit and page number
+        const totalCount = data.length;
         const startingIndex = page * limit;
         const endingIndex = limit + startingIndex;
         data = data.slice(startingIndex, endingIndex);
 
-        resObj.data = data;
+        resObj.data = { items: data, totalCount };
         resObj.success = true;
         resObj.error = false;
         resObj.message = 'Success';

@@ -12,6 +12,7 @@
         "dotenv": "^16.0.3",
         "grunt": "1.0.4",
         "jsonwebtoken": "^9.0.0",
+        "mixpanel": "^0.18.0",
         "mongodb": "^4.11.0",
         "node-fetch": "2",
         "sails": "^1.5.3",
@@ -19,6 +20,7 @@
         "sails-hook-orm": "^4.0.0",
         "sails-hook-sockets": "^2.0.0",
         "sails-mongo": "^2.0.0",
+        "uuid": "^9.0.1",
         "xrpl": "^2.5.0",
         "xumm-sdk": "^1.7.1"
     },
