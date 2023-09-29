@@ -5,6 +5,10 @@ LOG_FILE="./logs/cron.log"
 
 echo "Running your scripts..." >> $LOG_FILE
 
+# Clear the log file before appending new details
+echo "Clearing log file..."
+> $LOG_FILE
+
 export PATH="$PATH:/home/ubuntu/.nvm/versions/node/v16.18.1/bin"
 
 # Run the fetch:ledger-data command

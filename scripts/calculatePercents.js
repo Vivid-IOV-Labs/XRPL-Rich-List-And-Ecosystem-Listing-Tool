@@ -4,47 +4,83 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const calculatePercents = async () => {
+    console.log('Starting the calculatePercents function...');
     const mongoClient = new MongoClient(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
-        const db = await mongoClient.db('Richlist');
-        const percentsCollection = await db.collection('percents');
+        console.log('Connecting to MongoDB...');
+        await mongoClient.connect();
+        console.log('Connected to MongoDB.');
 
-        const ledgerCollection = await db.collection('ledger').find().sort({ _id: -1 }).toArray();
-        const { hash, ledgeIndex, closeTimeHuman, totalCoins } = ledgerCollection[0];
-        // Check if percent already exists
-        const doesExist = await percentsCollection.find({ hash }).toArray();
-        if (doesExist.length > 0) {
+        const db = mongoClient.db('Richlist');
+        const percentsCollection = db.collection('percents');
+        const ledgerCollection = db.collection('ledger');
+        const accountCollection = db.collection('account');
+
+        console.log('Fetching the latest ledger record...');
+        const latestLedger = await ledgerCollection.find().sort({ _id: -1 }).limit(1).next();
+        const { hash, ledgeIndex, closeTimeHuman, totalCoins } = latestLedger;
+        console.log(`Latest ledger record fetched: ${hash}`);
+
+        console.log('Checking if record already exists...');
+        const doesExist = await percentsCollection.countDocuments({ hash });
+        if (doesExist > 0) {
             console.log(`The record already exists for ${hash}`);
             return;
         }
 
-        console.log('Fetching accounts from DB');
-        const accountCollection = await db.collection('account').find().toArray();
+        console.log('Initializing variables...');
         const percents = [0.01, 0.1, 0.2, 0.5, 1, 2, 3, 4, 5, 10, 15, 25, 34.19];
-        console.log('Sorting accounts');
-        const accounts = accountCollection.sort((a, b) => {
-            return a.balance > b.balance ? -1 : b.balance > a.balance ? 1 : 0;
-        });
-        const numberOfAccounts = accounts.length;
-        const lastPercentsCollection = await percentsCollection.find().sort({ _id: -1 }).limit(1).toArray();
-        const numberOfAccountsChange = numberOfAccounts - lastPercentsCollection[0].totalAccounts;
-        const percentAccountChange = parseFloat(((numberOfAccountsChange / lastPercentsCollection[0].totalAccounts) * 100).toFixed(2));
-        let circulatingSupply = 0.0;
-        const percentResults = [];
 
-        console.log('Calculating percentages');
-        percents.forEach((p) => {
-            let n = Math.round((numberOfAccounts / 100) * p);
-            const currAccounts = accounts.slice(0, n);
-            let e = 0.0;
+        console.log('Fetching the last record from percents collection...');
+        const lastPercents = await percentsCollection.find().sort({ _id: -1 }).limit(1).next();
 
-            currAccounts.forEach((a) => {
-                e += a.balance;
+        console.log('Counting total number of accounts...');
+        const totalNumberOfAccounts = await accountCollection.countDocuments();
+        console.log(`Total number of accounts: ${totalNumberOfAccounts}`);
+
+        const percentResults = percents.map(p => ({ percentage: p, numberOfAccounts: 0, aggregateBalances: 0, minBalance: Infinity }));
+        let idx = 0;
+        let circulatingSupply = 0;
+
+        console.log('Iterating through sorted account records...');
+        const accountCursor = accountCollection.find().sort({ balance: -1 });
+        await accountCursor.forEach((account) => {
+            idx++;
+            circulatingSupply += parseFloat(account.balance);
+
+            // Update the console inline with the account index
+            process.stdout.write(`\rProcessing account ${idx} : ${account.balance}...`);
+
+            percents.forEach((p, i) => {
+                const n = Math.round((totalNumberOfAccounts / 100) * p);
+                if (idx < n) {
+                    percentResults[i].numberOfAccounts++;
+                    percentResults[i].aggregateBalances += account.balance;
+                    percentResults[i].minBalance = account.balance;
+                }
             });
-
-            circulatingSupply += e;
-            percentResults.push({ percentage: p, numberOfAccounts: n, aggregateBalances: e, minBalance: currAccounts[currAccounts.length - 1].balance });
         });
+
+        let numberOfAccountsChange = 0;
+        let percentAccountChange = 0.0;
+
+        if (lastPercents) {
+            numberOfAccountsChange = totalNumberOfAccounts - lastPercents.totalAccounts;
+            percentAccountChange = parseFloat(((numberOfAccountsChange / lastPercents.totalAccounts) * 100).toFixed(2));
+        }
+
+        console.log('Inserting new record into percents collection...');
+        console.log(JSON.stringify({
+            hash,
+            ledgeIndex,
+            ledgerCloseTime: closeTimeHuman,
+            circulatingSupply,
+            totalSupply: totalCoins,
+            totalAccounts: totalNumberOfAccounts,
+            numberOfAccountsChange,
+            percentAccountChange,
+            percents: percentResults,
+        }, null, "\t"));
 
         await percentsCollection.insertOne({
             hash,
@@ -57,11 +93,15 @@ const calculatePercents = async () => {
             percentAccountChange,
             percents: percentResults,
         });
+        console.log('New record inserted successfully.');
     } catch (error) {
-        console.log(error);
+        console.log('An error occurred:', error);
     } finally {
+        console.log('Closing MongoDB connection...');
         await mongoClient.close();
+        console.log('MongoDB connection closed.');
     }
 };
 
+console.log('Invoking calculatePercents...');
 calculatePercents();

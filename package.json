@@ -30,7 +30,7 @@
     },
     "scripts": {
         "fetch:ledger-data": "node --max-old-space-size=8192 ./scripts/fetchAndStoreLedgerData.js",
-        "calculate:percents": "node --max-old-space-size=8192 ./scripts/calculatePercents.js",
+        "calculate:percents": "node ./scripts/calculatePercents.js",
         "calculate:nftAnalytics": "node --max-old-space-size=8192 ./scripts/nftAnalytics.js",
         "update:trackedProjects": "node --max-old-space-size=8192 ./scripts/trackedProjects.js",
         "start:sails": "NODE_ENV=production node app.js",

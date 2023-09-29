@@ -93,7 +93,7 @@ const richlist = async (ledgerIndex = null, marker = null) => {
                 hash: ledger.hash,
                 ledgeIndex: parseInt(ledger.ledger_index),
                 closeTimeHuman: ledger.close_time_human,
-                totalCoins: parseInt(ledger.total_coins) / 1000000,
+                totalCoins: parseInt(ledger.total_coins),
             };
 
             // Adding the ledger stats in DB
