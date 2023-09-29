@@ -88,7 +88,7 @@ const calculatePercents = async () => {
             ledgerCloseTime: closeTimeHuman,
             circulatingSupply,
             totalSupply: totalCoins,
-            totalAccounts: numberOfAccounts,
+            totalAccounts: totalNumberOfAccounts,
             numberOfAccountsChange,
             percentAccountChange,
             percents: percentResults,
