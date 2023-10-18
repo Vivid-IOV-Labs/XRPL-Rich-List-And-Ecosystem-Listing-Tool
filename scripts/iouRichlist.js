@@ -9,26 +9,58 @@ const iouBalance = new Map();
 const getTrustLines = async (client, accountDetails, ious, result) => {
     const { account, balance } = accountDetails;
     let marker = null;
-    while (!marker) {
-        const { result: { lines, marker: nextMarker } } = await client.request({
-            command: "account_lines",
-            account,
-            limit: 400,
-            marker: marker ?? undefined
-        });
-        marker = nextMarker;
+    do {
+        try {
+            const { result: { lines, marker: nextMarker } } = await client.request({
+                command: "account_lines",
+                account,
+                limit: 400,
+                marker: marker ?? undefined
+            });
 
-        lines.forEach((item) => {
-            const key = item.account;
-            if (ious.has(key)) {
-                ious.get(key).push({ account: accountDetails.account, balance: accountDetails.balance });
-                result[key] = (result[key] || 0) + 1;
-                iouBalance.set(key, (iouBalance.get(key) || 0) + parseFloat(balance));
-            }
-        });
-        console.log(`Fetching ${account} trustlines : ${marker}`);
-    };
+            marker = nextMarker;
+
+            lines.forEach((item) => {
+                const key = item.account;
+                if (ious.has(key)) {
+                    ious.get(key).push({ account: accountDetails.account, balance: accountDetails.balance });
+                    result[key] = (result[key] || 0) + 1;
+                    iouBalance.set(key, (iouBalance.get(key) || 0) + parseFloat(balance));
+                }
+            });
+
+            console.log(`Fetching ${account} marker : ${marker}`);
+        } catch (error) {
+            console.error("An error occurred:", error);
+            break; // Exit the loop if an error occurs
+        }
+    } while (marker);
 };
+
+const manipulateIOUList = (iouObject, ious, prevRankMap) => {
+    const iouList = Array.from(iouObject.keys()).map(key => {
+        return {
+            projectName: ious.find(iou => iou.issuerAccount === key).projectName,
+            account: key,
+            totalHolders: iouObject.get(key).length,
+            totalHolderBalance: iouBalance.get(key) || 0,
+            holders: iouObject.get(key),
+        };
+    });
+
+    // sort for rank
+    iouList.sort((a, b) => b.totalHolders - a.totalHolders);
+
+    // Add rank and directionOfChange
+    iouList.forEach((iou, index) => {
+        const currentRank = index + 1;
+        const prevRank = prevRankMap.get(iou.account);
+        iou.rank = currentRank;
+        iou.directionOfChange = prevRank ? prevRank - currentRank : 0;
+    });
+
+    return iouList;
+}
 
 const iouRichlist = async (percent) => {
     const client = new Client(process.env.WSS_CLIENT_URL);
@@ -43,6 +75,14 @@ const iouRichlist = async (percent) => {
         const iouRichlist = mongoClient.db('Richlist').collection("iouRichlist");
         const iouObject = new Map();
 
+        // Fetch the previous iouList from the database
+        const prevRecord = await iouRichlist.find().sort({ _id: -1 }).limit(1).next();
+        const prevIouList = prevRecord ? prevRecord.topPercent.iouList : [];
+        const prevRankMap = new Map();
+        prevIouList.forEach((iou, index) => {
+            prevRankMap.set(iou.account, index + 1);
+        });
+
         console.log('Checking if record already exists...');
         console.log('Fetching the latest ledger record...');
         const { _id, hash, ledgeIndex, ledgerCloseTime: closeTimeHuman, totalSupply: totalCoins } = await mongoClient.db('Richlist').collection("percents").find().sort({ _id: -1 }).limit(1).next();
@@ -54,9 +94,7 @@ const iouRichlist = async (percent) => {
             return;
         }
 
-        ious.forEach(iou => {
-            iouObject.set(iou.issuerAccount, []);
-        });
+        ious.forEach(iou => { iouObject.set(iou.issuerAccount, []) });
 
         const accountCollection = mongoClient.db('Richlist').collection("account");
         const totalAccountsLength = await accountCollection.countDocuments();
@@ -72,16 +110,7 @@ const iouRichlist = async (percent) => {
         });
 
         await Promise.all(trustLinePromises);
-
-        const iouList = Array.from(iouObject.keys()).map(key => {
-            return {
-                projectName: ious.find(iou => iou.issuerAccount === key).projectName,
-                account: key,
-                totalHolders: iouObject.get(key).length,
-                totalHolderBalance: iouBalance.get(key) || 0,
-                holders: iouObject.get(key),
-            };
-        });
+        const iouList = manipulateIOUList(iouObject, ious, prevRankMap);
 
         const result = {
             _id,
@@ -108,3 +137,4 @@ const iouRichlist = async (percent) => {
 };
 
 iouRichlist(percent);
+
