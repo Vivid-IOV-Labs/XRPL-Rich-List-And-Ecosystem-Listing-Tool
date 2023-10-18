@@ -23,7 +23,7 @@ const getTrustLines = async (client, accountDetails, ious, result) => {
             lines.forEach((item) => {
                 const key = item.account;
                 if (ious.has(key)) {
-                    ious.get(key).push({ account: accountDetails.account, balance: accountDetails.balance });
+                    ious.get(key).push({ account, balance });
                     result[key] = (result[key] || 0) + 1;
                     iouBalance.set(key, (iouBalance.get(key) || 0) + parseFloat(balance));
                 }
