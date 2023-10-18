@@ -3,13 +3,13 @@ const { Client } = require('xrpl');
 const { MongoClient } = require('mongodb');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
-const percent = 0.01;
+const percent = 0.2;
 const iouBalance = new Map();
 
 const getTrustLines = async (client, accountDetails, ious, result) => {
     const { account, balance } = accountDetails;
     let marker = null;
-    do {
+    while (!marker) {
         const { result: { lines, marker: nextMarker } } = await client.request({
             command: "account_lines",
             account,
@@ -26,7 +26,8 @@ const getTrustLines = async (client, accountDetails, ious, result) => {
                 iouBalance.set(key, (iouBalance.get(key) || 0) + parseFloat(balance));
             }
         });
-    } while (marker);
+        console.log(`Fetching ${account} trustlines : ${marker}`);
+    };
 };
 
 const iouRichlist = async (percent) => {
