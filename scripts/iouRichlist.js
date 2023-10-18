@@ -44,7 +44,7 @@ const iouRichlist = async (percent) => {
 
         console.log('Checking if record already exists...');
         console.log('Fetching the latest ledger record...');
-        const { _id, hash, ledgeIndex, ledgerCloseTime: closeTimeHuman, totalSupply: totalCoins, percents } = await mongoClient.db('Richlist').collection("percents").find().sort({ _id: -1 }).limit(1).next();
+        const { _id, hash, ledgeIndex, ledgerCloseTime: closeTimeHuman, totalSupply: totalCoins } = await mongoClient.db('Richlist').collection("percents").find().sort({ _id: -1 }).limit(1).next();
         console.log(`Latest ledger record fetched: ${hash}`);
 
         const doesExist = await iouRichlist.countDocuments({ hash });
