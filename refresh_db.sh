@@ -27,4 +27,9 @@ npm run calculate:percents >> $LOG_FILE 2>&1
 echo "Running calculate:nftAnalytics..." >> $LOG_FILE
 npm run calculate:nftAnalytics >> $LOG_FILE 2>&1
 
+# Run calculate:iouRichlist command
+
+echo "Running calculate:nftAnalytics..." >> $LOG_FILE
+npm run calculate:iouRichlist >> $LOG_FILE 2>&1
+
 echo "Scripts ran successfully!" >> $LOG_FILE
