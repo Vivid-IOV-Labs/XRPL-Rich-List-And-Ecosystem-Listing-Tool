@@ -10,4 +10,4 @@ This codebase also includes tools to manually list XRPL NFT ecosystem projects a
 
 ### Feedback
 
-For any feedback/queries please email [support@peerkat.com](mailto:support@peerkat.com)
+For any feedback/queries please email [support@peerkat.com](mailto:support@peerkat.com) or visit [vividdeeptech.com](https://www.vividdeeptech.com/).
